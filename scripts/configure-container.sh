@@ -1,5 +1,7 @@
 npm i -g yarn
+npm i -g ngrok 
 export $(egrep -v '^#' .env | xargs)
+ngrok authtoken $NGROK_TOKEN
 
 # Install starhip
 cp -R .devcontainer/.config ~/
