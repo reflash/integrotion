@@ -1,0 +1,24 @@
+{
+    "name": "Node.js & TypeScript",
+	"image": "mcr.microsoft.com/vscode/devcontainers/typescript-node:0-12",
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/bash"
+	},
+	"remoteUser": "node",
+    "forwardPorts": [7071],
+    "extensions": [
+		"ms-azuretools.vscode-azurefunctions",
+		"coenraads.bracket-pair-colorizer-2",
+		"mikestead.dotenv",
+		"usernamehw.errorlens",
+		"eamodio.gitlens",
+		"cliffordfajardo.highlight-line-vscode",
+		"ms-vscode.js-debug-nightly",
+		"esbenp.prettier-vscode",
+		"wayou.vscode-todo-highlight",
+		"ms-vscode.vscode-typescript-tslint-plugin",
+		"rbbit.typescript-hero"	
+	],
+	"postCreateCommand": "bash scripts/configure-container.sh"
+}

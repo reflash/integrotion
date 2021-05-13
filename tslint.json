@@ -1,0 +1,39 @@
+{
+    "extends": ["tslint-plugin-prettier"],
+    "rulesDirectory": [
+      "node_modules/tslint-plugin-prettier"
+    ],
+    "linterOptions": {
+      "exclude": [
+          "bin"
+      ]
+    },
+    "rules": {
+      "prettier": true,
+      "no-implicit-dependencies": [false, "dev"],
+      "object-literal-sort-keys": false,
+      "curly": false,
+      "variable-name": {
+        "options": [
+          "allow-leading-underscore",
+          "allow-pascal-case"
+        ]
+      },
+      "no-magic-numbers": true,
+      "no-conditional-assignment": true,
+      "no-invalid-template-strings": true,
+      "no-tautology-expression": true,
+      "no-unused-variable": true,
+      "no-var-keyword": true,
+      "cyclomatic-complexity": true,
+      "max-classes-per-file": [true, 3],
+      "max-file-line-count": [true, 300],
+      "no-duplicate-imports": true,
+      "prefer-const": true,
+      "prefer-readonly": true,
+      "arrow-return-shorthand": true,
+      "ordered-imports": true,
+      "prefer-template": true,
+      "no-floating-promises": true
+    }
+}

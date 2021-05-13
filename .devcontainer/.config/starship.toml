@@ -1,0 +1,5 @@
+[custom.token_not_set]
+command = "echo '.env file not configured (see README)'"
+symbol = "🏞  "
+when = """test ! -f .env """
+style = "bold red"

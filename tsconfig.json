@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "lib": ["es2018", "esnext.asynciterable", "dom"],
+        "module": "commonjs",
+        "outDir": "dist",
+        "rootDir": "src",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2018",
+        "types": ["reflect-metadata", "jest"],
+        "typeRoots": ["./node_modules/@types"]
+    }
+}

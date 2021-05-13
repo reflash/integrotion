@@ -1,0 +1,19 @@
+service: integrotion
+
+provider:
+  name: azure
+  location: West Europe
+  runtime: nodejs12
+  versionFunctions: false
+  prefix: integrotion
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-plugin-tree-shake
+  - serverless-azure-functions
+
+package:
+  excludeDevDependencies: false
+  include:
+    - '**/function.json'
+    - 'host.json'
