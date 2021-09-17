@@ -1,0 +1,86 @@
+{
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "editor.bracketPairColorization.enabled": true,
+    "typescript.inlayHints.parameterNames.enabled": "all",
+    "editor.rulers": [
+        140
+    ],
+    "azureFunctions.deploySubpath": ".",
+    "azureFunctions.postDeployTask": "npm install",
+    "azureFunctions.projectLanguage": "TypeScript",
+    "azureFunctions.projectRuntime": "~3",
+    "debug.internalConsoleOptions": "neverOpen",
+    "azureFunctions.preDeployTask": "npm prune",
+    "files.eol": "\n",
+    "workbench.iconTheme": "vscode-icons",
+    "editor.fontSize": 14,
+    "editor.fontFamily": "Fira Code",
+    "editor.fontLigatures": true,
+    "workbench.editor.limit.value": 5,
+    "workbench.editor.limit.enabled": true,
+    "tslint.packageManager": "yarn",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": true,
+        "source.addMissingImports": true
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "todohighlight.keywords": [
+        {
+        "text": "TODO:",
+        "color": "white",
+        "backgroundColor": "rgba(247, 188, 67, 0.7)",
+        "isWholeLine": true,
+        },
+        {
+            "text": "HACK:",
+            "color": "#CBCCC6",
+            "backgroundColor": "rgba(61, 47, 162, 0.7)",
+            "isWholeLine": true,
+        },
+        {
+            "text": "BUG:",
+            "color": "white",
+            "backgroundColor": "rgb(233, 63, 51, 0.7)",
+            "overviewRulerColor": "red",
+            "isWholeLine": true,
+        },
+        {
+        "text": "NOTE:",
+        "color": "#CBCCC6",
+        "backgroundColor": "rgba(61, 121, 0, 0.7)",
+        "overviewRulerColor": "gray",
+        "isWholeLine": true,
+        },
+        {
+        "text": "FIXME:",
+        "backgroundColor": "rgba(240, 98, 146, 0.7)",
+        "isWholeLine": true,
+        }
+    ],
+    "typescript.preferences.importModuleSpecifier": "relative",
+    "typescript.updateImportsOnFileMove.enabled": "always",
+    "terminal.integrated.tabs.enabled": true,
+  "terminal.integrated.profiles.linux": {
+      "ngrok": {
+          "path": "bash",
+          "args": ["-c", "yarn start:ngrok"],
+          "icon": "symbol-class",
+          "color": "terminal.ansiYellow",
+          "overrideName": true
+      },
+      "test": {
+          "path": "bash",
+          "args": ["-c", "yarn test; read -p \"\n\nPress any key to continue...\""],
+          "icon": "debug-start",
+          "color": "terminal.ansiGreen",
+          "overrideName": true
+      },
+      "deploy:local": {
+        "path": "bash",
+        "args": ["-c", "yarn deploy:local"],
+        "icon": "debug-stackframe-focused",
+        "color": "terminal.ansiBlue",
+        "overrideName": true
+      }
+  }
+}
