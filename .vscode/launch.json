@@ -1,0 +1,50 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Unit integrotion",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "test"
+            ],
+            "args": [],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Integration integrotion",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "test:integration"
+            ],
+            "args": [],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Local Functions",
+            "runtimeExecutable": "yarn",
+            "runtimeArgs": [
+                "debug:local",
+                "--runInBand"
+            ],
+            "preLaunchTask": "debug:setup",
+            "postDebugTask": "debug:cleanup",
+            "args": [],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true
+        }
+    ]
+}

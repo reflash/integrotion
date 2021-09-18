@@ -1,6 +1,7 @@
 // tslint:disable: no-magic-numbers
+import { AzureFunction } from "@azure/functions";
 // NOTE: wrapper for handlers (response is set from returned value)
-export const handlerAdapter = (f: (context: any) => Promise<any>) => async (context: any) => {
+export const handlerAdapter = (f: AzureFunction) => async (context: any) => {
     const res = await f(context);
     context.res = res;
 };
