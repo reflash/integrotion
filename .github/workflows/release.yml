@@ -1,0 +1,43 @@
+name: release
+
+on:
+  release:
+    types: [released]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: yarn install
+    - run: yarn build
+    - run: yarn test:full
+    - run: |
+        echo NOTION_TOKEN=$NOTION_TOKEN > .env.production
+        echo NOTION_DATABASE=$NOTION_DATABASE >> .env.production
+        echo NODE_ENV=$NODE_ENV >> .env.production
+        echo BOT_TOKEN=$BOT_TOKEN >> .env.production
+        echo USER_ID=$USER_ID >> .env.production
+      shell: bash
+      env:
+        NOTION_TOKEN: ${{secrets.NOTION_TOKEN}}
+        NOTION_DATABASE: ${{secrets.NOTION_DATABASE}}
+        NODE_ENV: ${{secrets.NODE_ENV}}
+        BOT_TOKEN: ${{secrets.BOT_TOKEN}}
+        USER_ID: ${{secrets.USER_ID}}
+    - run: yarn deploy:prod
+      env:   
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
