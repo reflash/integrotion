@@ -21,7 +21,6 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: yarn install
     - run: yarn build
-    - run: yarn test:full
     - run: |
         echo NOTION_TOKEN=$NOTION_TOKEN > .env.production
         echo NOTION_DATABASE=$NOTION_DATABASE >> .env.production
