@@ -52,7 +52,7 @@ const handleQuest = async (page: PagesRetrieveResponse) => {
     const now = new Date();
     await notion.pages.update({ page_id: page.id, properties: {
         "Status": { select: { name: "COMPLETED" } } as SelectPropertyValue,
-        "Completed on": { date: { start: now.toString() } } as DatePropertyValue,
+        "Completed on": { date: { start: now.toISOString() } } as DatePropertyValue,
     }, archived: false });
 
     return `Quest completed on ${now}`;
