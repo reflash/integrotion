@@ -85,7 +85,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
             if (eventDescription) await addToHistory(questPage, name, eventDescription);
 
             const successMessage = `${name}:\n${task}`;
-            await bot.api.sendMessage(process.env.USER_ID!, successMessage, { parse_mode: 'MarkdownV2'});
+            await bot.api.sendMessage(process.env.USER_ID!, successMessage);
         }
     }
     catch(e) {
