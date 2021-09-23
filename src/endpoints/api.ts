@@ -4,6 +4,13 @@ import { Client } from "@notionhq/client";
 import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, TitlePropertyValue, RichTextPropertyValue } from '@notionhq/client/build/src/api-types';
 import { PagesRetrieveResponse } from '@notionhq/client/build/src/api-endpoints';
 
+type TaskParams = {
+    id: string;
+    task: string;
+    type: string;
+    nid: string;
+};
+
 const bot = new Bot(process.env.BOT_TOKEN!);
 const notion = new Client({
     auth: process.env.NOTION_TOKEN,
@@ -11,13 +18,13 @@ const notion = new Client({
 
 const parseTask = (content: string) => {
     const text = content;
-    const match = /^\*\*\[(?<type>.+)\]\*\*(?<task>.*)\/\s\[NID\]\((?<nid>.+)\)/.exec(text);
+    const match = /^\*\*\[(?<type>.+)\]\*\*(?<task>[^|]+)(\|\s\[NID\]\((?<nid>.+)\))?/.exec(text);
     
     if (!match || !match.groups)
         throw new Error("No matches in item");
 
     const type = match.groups['type'];
-    const task = match.groups['task'];
+    const task = match.groups['task'].trim();
     const nid = match.groups['nid'];
 
     return { type, task, nid };
@@ -30,7 +37,11 @@ const isRepeating = (type: string) =>
 const isQuest = (type: string) => 
     type === 'Quest';
 
-const handleRepeating = async (page: PagesRetrieveResponse) => {
+const isChest = (type: string) => 
+    type === 'Chest';
+
+const handleRepeating = async (params: TaskParams) => {
+    const page = await notion.pages.retrieve({ page_id: params.nid });
     const maxInARow = (page.properties['Max times completed in a row'] as NumberPropertyValue).number!;
     const timesCompleted = (page.properties['Times completed'] as NumberPropertyValue).number!;
     const timesCompletedInARow = (page.properties['Times completed in a row'] as NumberPropertyValue).number!;
@@ -45,25 +56,62 @@ const handleRepeating = async (page: PagesRetrieveResponse) => {
         "Max times completed in a row": { number: newMaxInARow } as NumberPropertyValue,
     }, archived: false });
 
-    return `Old to New values (MTCR-TC-TCR): ${maxInARow} => ${newMaxInARow}; ${timesCompleted} => ${newTimesCompleted}; ${timesCompletedInARow} => ${newTimesCompletedInARow}`
+    const name = `Task completed ${params.id}`;
+    const message = `${name}\n${params.task}`;
+    await addToHistory(page, name, `Old to New values (MTCR-TC-TCR): ${maxInARow} => ${newMaxInARow}; ${timesCompleted} => ${newTimesCompleted}; ${timesCompletedInARow} => ${newTimesCompletedInARow}`);
+    await bot.api.sendMessage(process.env.USER_ID!, message); 
 }
 
-const handleQuest = async (page: PagesRetrieveResponse) => {
+const handleQuest = async (params: TaskParams) => {
+    const page = await notion.pages.retrieve({ page_id: params.nid });
     const now = new Date();
     await notion.pages.update({ page_id: page.id, properties: {
         "Status": { select: { name: "COMPLETED" } } as SelectPropertyValue,
         "Completed on": { date: { start: now.toISOString() } } as DatePropertyValue,
     }, archived: false });
-
-    return `Quest completed on ${now}`;
+    
+    const name = `Task completed ${params.id}`;
+    const message = `${name}\n${params.task}`;
+    await addToHistory(page, name, `Quest completed on ${now}`);
+    await bot.api.sendMessage(process.env.USER_ID!, message);
 }
 
-const handleTask = async (type: string, page: PagesRetrieveResponse) => {
-    if (isRepeating(type))
-        return handleRepeating(page);
-    else if (isQuest(type))
-        return handleQuest(page);
-    return null;
+const handleChest = async (params: TaskParams) => {
+    const page = await notion.pages.retrieve({ page_id: params.nid });
+    const coverUrl = page.cover?.type === 'file' ? page.cover.file.url : page.cover?.external.url;
+    const actual = (page.properties['Actual'] as NumberPropertyValue).number!;
+    const newActual = actual + 1;
+    const required = (page.properties['Required'] as NumberPropertyValue).number!;
+    await notion.pages.update({ page_id: page.id, properties: {
+        "Actual": { number: newActual } as NumberPropertyValue
+    }, archived: false });
+    
+
+    if (newActual === required) {
+        await bot.api.sendPhoto(process.env.USER_ID!, coverUrl!, { caption: "Hooray 🎉\n\nYou've received your weekly chest\nYou can open it tomorrow morning!"});
+        await bot.api.sendMessage(process.env.USER_ID!, '🎉');
+    } else {
+        const percent = (newActual) / required;
+        const progress = '▓'.repeat(Math.round(percent * 10)) + '░'.repeat(Math.round((1 - percent) * 10)) + ` ${newActual}/${required}`;
+        await bot.api.sendMessage(process.env.USER_ID!, `You're one step closer to your weekly supply chest\n\n${progress}`);
+        await bot.api.sendMessage(process.env.USER_ID!, '👏');
+    }
+}
+
+const handleOther = async (params: TaskParams) => {
+    const message = `Task completed ${params.id}\n${params.task}`;
+    await bot.api.sendMessage(process.env.USER_ID!, message);
+}
+
+const handleTask = async (params: TaskParams) => {
+    if (isRepeating(params.type))
+        return handleRepeating(params);
+    else if (isQuest(params.type))
+        return handleQuest(params);
+    else if (isChest(params.type))
+        return handleChest(params)
+    
+    return handleOther(params);
 }
 
 const addToHistory = async (page: PagesRetrieveResponse, name: string, eventDescription: string) => {
@@ -77,15 +125,8 @@ const addToHistory = async (page: PagesRetrieveResponse, name: string, eventDesc
 exports.handler = handlerAdapter(async ({ req }) => {
     try {
         if (req && req.body && req.body.event_data && req.body.event_name === 'item:completed') {
-            const { type, task, nid } = parseTask(req.body.event_data.content);
-            const questPage = await notion.pages.retrieve({ page_id: nid });
-            
-            const name = `Task completed ${req.body.event_data.id}`;
-            const eventDescription = await handleTask(type, questPage);
-            if (eventDescription) await addToHistory(questPage, name, eventDescription);
-
-            const successMessage = `${name}:\n${task}`;
-            await bot.api.sendMessage(process.env.USER_ID!, successMessage);
+            const params = { id: req.body.event_data.id, ...parseTask(req.body.event_data.content)};
+            await handleTask(params);
         }
     }
     catch(e) {
