@@ -23,14 +23,16 @@ jobs:
     - run: yarn build
     - run: |
         echo NOTION_TOKEN=$NOTION_TOKEN > .env.production
-        echo NOTION_DATABASE=$NOTION_DATABASE >> .env.production
+        echo HISTORY_NOTION_DATABASE=$HISTORY_NOTION_DATABASE >> .env.production
+        echo ACHIEVEMENTS_NOTION_DATABASE=$ACHIEVEMENTS_NOTION_DATABASE >> .env.production
         echo NODE_ENV=$NODE_ENV >> .env.production
         echo BOT_TOKEN=$BOT_TOKEN >> .env.production
         echo USER_ID=$USER_ID >> .env.production
       shell: bash
       env:
         NOTION_TOKEN: ${{secrets.NOTION_TOKEN}}
-        NOTION_DATABASE: ${{secrets.NOTION_DATABASE}}
+        HISTORY_NOTION_DATABASE: ${{secrets.HISTORY_NOTION_DATABASE}}
+        ACHIEVEMENTS_NOTION_DATABASE: ${{secrets.ACHIEVEMENTS_NOTION_DATABASE}}
         NODE_ENV: ${{secrets.NODE_ENV}}
         BOT_TOKEN: ${{secrets.BOT_TOKEN}}
         USER_ID: ${{secrets.USER_ID}}

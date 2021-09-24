@@ -1,7 +1,7 @@
 import { handlerAdapter, success } from '../utils/azure';
 import { Bot } from "grammy";
 import { Client } from "@notionhq/client";
-import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, TitlePropertyValue, RichTextPropertyValue } from '@notionhq/client/build/src/api-types';
+import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, FormulaPropertyValue, TitlePropertyValue, RichTextPropertyValue } from '@notionhq/client/build/src/api-types';
 import { PagesRetrieveResponse } from '@notionhq/client/build/src/api-endpoints';
 
 type TaskParams = {
@@ -10,6 +10,8 @@ type TaskParams = {
     type: string;
     nid: string;
 };
+
+const defaultAchievementPicture = 'https://tagn.files.wordpress.com/2016/06/rtdachi.jpg';
 
 const bot = new Bot(process.env.BOT_TOKEN!);
 const notion = new Client({
@@ -115,11 +117,38 @@ const handleTask = async (params: TaskParams) => {
 }
 
 const addToHistory = async (page: PagesRetrieveResponse, name: string, eventDescription: string) => {
-    await notion.pages.create({ parent: { database_id: process.env.NOTION_DATABASE! }, properties: {
+    await notion.pages.create({ parent: { database_id: process.env.HISTORY_NOTION_DATABASE! }, properties: {
         "Name": { title: [ { text: { content: name}}] } as TitlePropertyValue,
         "Quest": { relation: [ { id: page.id } ] } as any,
         "Event description": { rich_text: [ { text: { content: eventDescription } } ] } as RichTextPropertyValue,
     }});
+}
+
+const verifyAchievements = async () => {
+    const achievements = await notion.databases.query({ database_id: process.env.ACHIEVEMENTS_NOTION_DATABASE!, 
+        filter: { and: [ 
+            { property: 'Completed', formula: { checkbox: { equals: true } as any} },
+            { property: 'Achieved on', date: { is_empty: true }},
+        ]} 
+    });
+    const now = new Date().toISOString().substr(0,10);
+
+    for (const achievement of achievements.results) {
+        await notion.pages.update({ page_id: achievement.id, properties: {
+            "Achieved on": { date: { start: now } } as DatePropertyValue,
+        }, archived: false });
+
+        const achievementPoints = (achievement.properties['Achievement points (AP)'] as NumberPropertyValue).number!;
+        const achievementText = `Yay 👏 🚀 You've received an achievement\n\nPoints earned: 🔰 ${achievementPoints}`
+        if (achievement.icon?.type === 'file')
+            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.file.url!, { caption: achievementText });
+        else if (achievement.icon?.type === 'external')
+            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.external.url!, { caption: achievementText });
+        else if (achievement.icon?.type === 'emoji')
+            await bot.api.sendPhoto(process.env.USER_ID!, defaultAchievementPicture, { caption: achievementText });
+
+        await bot.api.sendMessage(process.env.USER_ID!, '🎉');
+    }
 }
 
 exports.handler = handlerAdapter(async ({ req }) => {
@@ -127,6 +156,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
         if (req && req.body && req.body.event_data && req.body.event_name === 'item:completed') {
             const params = { id: req.body.event_data.id, ...parseTask(req.body.event_data.content)};
             await handleTask(params);
+            await verifyAchievements();
         }
     }
     catch(e) {
