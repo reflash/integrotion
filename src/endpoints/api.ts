@@ -18,6 +18,10 @@ const notion = new Client({
     auth: process.env.NOTION_TOKEN,
 });
 
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const parseTask = (content: string) => {
     const text = content;
     const match = /^\*\*\[(?<type>.+)\]\*\*(?<task>[^|]+)(\|\s\[NID\]\((?<nid>.+)\))?/.exec(text);
@@ -149,6 +153,7 @@ const verifyAchievements = async () => {
             await bot.api.sendPhoto(process.env.USER_ID!, defaultAchievementPicture, { caption: achievementText, parse_mode: 'MarkdownV2' });
 
         await bot.api.sendMessage(process.env.USER_ID!, '🎉');
+        await sleep(1100);
     }
 }
 
@@ -157,6 +162,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
         if (req && req.body && req.body.event_data && req.body.event_name === 'item:completed') {
             const params = { id: req.body.event_data.id, ...parseTask(req.body.event_data.content)};
             await handleTask(params);
+            await sleep(1100);
             await verifyAchievements();
         }
     }
