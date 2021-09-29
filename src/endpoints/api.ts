@@ -144,13 +144,13 @@ const verifyAchievements = async () => {
 
         const name = (achievement.properties['Name'] as TitlePropertyValue).title[0].plain_text;
         const achievementPoints = (achievement.properties['Achievement points (AP)'] as NumberPropertyValue).number!;
-        const achievementText = `Yay 👏 🚀 You've received an achievement\n\n**${name}** 🔰 ${achievementPoints}`
+        const achievementText = `Yay 👏 🚀 You've received an achievement\n\n${name} 🔰 ${achievementPoints}`
         if (achievement.icon?.type === 'file')
-            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.file.url!, { caption: achievementText, parse_mode: 'MarkdownV2' });
+            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.file.url!, { caption: achievementText });
         else if (achievement.icon?.type === 'external')
-            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.external.url!, { caption: achievementText, parse_mode: 'MarkdownV2' });
+            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.external.url!, { caption: achievementText });
         else if (achievement.icon?.type === 'emoji')
-            await bot.api.sendPhoto(process.env.USER_ID!, defaultAchievementPicture, { caption: achievementText, parse_mode: 'MarkdownV2' });
+            await bot.api.sendPhoto(process.env.USER_ID!, defaultAchievementPicture, { caption: achievementText });
 
         await bot.api.sendMessage(process.env.USER_ID!, '🎉');
         await sleep(1100);
