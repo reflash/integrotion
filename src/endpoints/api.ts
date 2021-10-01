@@ -1,7 +1,7 @@
 import { handlerAdapter, success } from '../utils/azure';
 import { Bot } from "grammy";
 import { Client } from "@notionhq/client";
-import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, FormulaPropertyValue, TitlePropertyValue, RichTextPropertyValue } from '@notionhq/client/build/src/api-types';
+import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, FormulaPropertyValue, TitlePropertyValue, RichTextPropertyValue, RelationPropertyValue } from '@notionhq/client/build/src/api-types';
 import { PagesRetrieveResponse } from '@notionhq/client/build/src/api-endpoints';
 
 type TaskParams = {
@@ -63,9 +63,8 @@ const handleRepeating = async (params: TaskParams) => {
     }, archived: false });
 
     const name = `Task completed ${params.id}`;
-    const message = `${name}\n${params.task}`;
     await addToHistory(page, name, `Old to New values (MTCR-TC-TCR): ${maxInARow} => ${newMaxInARow}; ${timesCompleted} => ${newTimesCompleted}; ${timesCompletedInARow} => ${newTimesCompletedInARow}`);
-    await bot.api.sendMessage(process.env.USER_ID!, message); 
+    await sendQuestMessage(page, params);
 }
 
 const handleQuest = async (params: TaskParams) => {
@@ -77,9 +76,8 @@ const handleQuest = async (params: TaskParams) => {
     }, archived: false });
     
     const name = `Task completed ${params.id}`;
-    const message = `${name}\n${params.task}`;
     await addToHistory(page, name, `Quest completed on ${now}`);
-    await bot.api.sendMessage(process.env.USER_ID!, message);
+    await sendQuestMessage(page, params);
 }
 
 const handleChest = async (params: TaskParams) => {
@@ -126,6 +124,28 @@ const addToHistory = async (page: PagesRetrieveResponse, name: string, eventDesc
         "Quest": { relation: [ { id: page.id } ] } as any,
         "Event description": { rich_text: [ { text: { content: eventDescription } } ] } as RichTextPropertyValue,
     }});
+}
+
+const sendQuestMessage = async (page: PagesRetrieveResponse, params: TaskParams) => {
+    const name = `Task completed ${params.id}`;
+    const title = (page.properties['Name'] as TitlePropertyValue).title?.[0]?.plain_text;
+    const description = (page.properties['Description'] as RichTextPropertyValue).rich_text?.[0]?.plain_text ?? 'no description';
+    const emoji = (page.properties['Emoji'] as RichTextPropertyValue).rich_text?.[0]?.plain_text ?? '';
+    
+    const message = `${name}\n${emoji} ${title}\n- ${description}`;
+    const categoryId = (page.properties['Category'] as RelationPropertyValue).relation?.[0]?.id;
+    
+    if (categoryId) {
+        const categoryPage = await notion.pages.retrieve({ page_id: categoryId });
+        const categoryImgUrl = categoryPage.icon?.type === 'file' 
+            ? categoryPage.icon.file.url 
+            : categoryPage.icon?.type === 'external'
+              ? categoryPage.icon?.external.url
+              : defaultAchievementPicture;
+        await bot.api.sendPhoto(process.env.USER_ID!, categoryImgUrl!, { caption: message});
+    } else {
+        await bot.api.sendMessage(process.env.USER_ID!, message);
+    }
 }
 
 const verifyAchievements = async () => {
