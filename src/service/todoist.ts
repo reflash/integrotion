@@ -1,3 +1,5 @@
+import TodoistApiREST from "todoist-api-ts";
+
 export const parseTask = (content: string) => {
     const text = content;
     const match = /^\*\*\[(?<type>.+)\]\*\*(?<task>[^|]+)(\|\s\[NID\]\((?<nid>.+)\))?/.exec(text);
@@ -11,3 +13,5 @@ export const parseTask = (content: string) => {
 
     return { type, task, nid };
 }
+
+export const todoist = new TodoistApiREST(process.env.TODOIST_TOKEN!); 

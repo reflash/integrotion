@@ -31,3 +31,9 @@ functions:
         - http: true
           route: setBotWebhook
           authLevel: anonymous
+  - botWebhook:
+      handler: dist/endpoints/botWebhook
+      events:
+        - http: true
+          route: botWebhook
+          authLevel: anonymous

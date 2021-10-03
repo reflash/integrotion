@@ -9311,6 +9311,14 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
+todoist-api-ts@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/todoist-api-ts/-/todoist-api-ts-1.2.0.tgz#e1291cfe3f613858a175780216cdd672050f65db"
+  integrity sha512-VN0LfMTQ1tadkLzj2ELDmuLcCES2UudEfNZr4x9Yu8gQ1wTHWDIBFdAoME8m3i0D7iG+NFj1+En3xusf/fMcmQ==
+  dependencies:
+    axios "^0.21.1"
+    uuid "^8.3.2"
+
 tough-cookie@^2.3.3, tough-cookie@^2.4.3, tough-cookie@~2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/tough-cookie/-/tough-cookie-2.5.0.tgz#cd9fb2a0aa1d5a12b473bd9fb96fa3dcff65ade2"
