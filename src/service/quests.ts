@@ -1,40 +1,8 @@
-import { handlerAdapter, success } from '../utils/azure';
-import { Bot } from "grammy";
-import { Client } from "@notionhq/client";
-import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, FormulaPropertyValue, TitlePropertyValue, RichTextPropertyValue, RelationPropertyValue } from '@notionhq/client/build/src/api-types';
-import { PagesRetrieveResponse } from '@notionhq/client/build/src/api-endpoints';
-
-type TaskParams = {
-    id: string;
-    task: string;
-    type: string;
-    nid: string;
-};
-
-const defaultAchievementPicture = 'https://tagn.files.wordpress.com/2016/06/rtdachi.jpg';
-
-const bot = new Bot(process.env.BOT_TOKEN!);
-const notion = new Client({
-    auth: process.env.NOTION_TOKEN,
-});
-
-function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-const parseTask = (content: string) => {
-    const text = content;
-    const match = /^\*\*\[(?<type>.+)\]\*\*(?<task>[^|]+)(\|\s\[NID\]\((?<nid>.+)\))?/.exec(text);
-    
-    if (!match || !match.groups)
-        throw new Error("No matches in item");
-
-    const type = match.groups['type'];
-    const task = match.groups['task'].trim();
-    const nid = match.groups['nid'];
-
-    return { type, task, nid };
-}
+import { PagesRetrieveResponse } from "@notionhq/client/build/src/api-endpoints";
+import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, TitlePropertyValue, RichTextPropertyValue, RelationPropertyValue } from "@notionhq/client/build/src/api-types";
+import { TaskParams, defaultAchievementPicture } from "../utils";
+import { bot } from "./bot";
+import { notion } from "./notion";
 
 const isRepeating = (type: string) => 
     type === 'Daily' || type === 'Every two days' || type === 'Weekday' || type === 'Weekend' ||
@@ -107,7 +75,7 @@ const handleOther = async (params: TaskParams) => {
     await bot.api.sendMessage(process.env.USER_ID!, message);
 }
 
-const handleTask = async (params: TaskParams) => {
+export const handleTask = async (params: TaskParams) => {
     if (isRepeating(params.type))
         return handleRepeating(params);
     else if (isQuest(params.type))
@@ -147,49 +115,3 @@ const sendQuestMessage = async (page: PagesRetrieveResponse, params: TaskParams)
         await bot.api.sendMessage(process.env.USER_ID!, message);
     }
 }
-
-const verifyAchievements = async () => {
-    const achievements = await notion.databases.query({ database_id: process.env.ACHIEVEMENTS_NOTION_DATABASE!, 
-        filter: { and: [ 
-            { property: 'Completed', formula: { checkbox: { equals: true } as any} },
-            { property: 'Achieved on', date: { is_empty: true }},
-        ]} 
-    });
-    const now = new Date().toISOString().substr(0,10);
-
-    for (const achievement of achievements.results) {
-        await notion.pages.update({ page_id: achievement.id, properties: {
-            "Achieved on": { date: { start: now } } as DatePropertyValue,
-        }, archived: false });
-
-        const name = (achievement.properties['Name'] as TitlePropertyValue).title[0].plain_text;
-        const achievementPoints = (achievement.properties['Achievement points (AP)'] as NumberPropertyValue).number!;
-        const achievementText = `Yay 👏 🚀 You've received an achievement\n\n${name} 🔰 ${achievementPoints}`
-        if (achievement.icon?.type === 'file')
-            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.file.url!, { caption: achievementText });
-        else if (achievement.icon?.type === 'external')
-            await bot.api.sendPhoto(process.env.USER_ID!, achievement.icon.external.url!, { caption: achievementText });
-        else if (achievement.icon?.type === 'emoji')
-            await bot.api.sendPhoto(process.env.USER_ID!, defaultAchievementPicture, { caption: achievementText });
-
-        await bot.api.sendMessage(process.env.USER_ID!, '🎉');
-        await sleep(1100);
-    }
-}
-
-exports.handler = handlerAdapter(async ({ req }) => {
-    try {
-        if (req && req.body && req.body.event_data && req.body.event_name === 'item:completed') {
-            const params = { id: req.body.event_data.id, ...parseTask(req.body.event_data.content)};
-            await handleTask(params);
-            await sleep(1100);
-            await verifyAchievements();
-        }
-    }
-    catch(e) {
-        const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e)}`;
-        await bot.api.sendMessage(process.env.USER_ID!, message);
-    }
-    
-    return success('Message processed');
-});

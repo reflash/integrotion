@@ -19,9 +19,21 @@ package:
     - 'host.json'
 
 functions:
-  - endpoint:
-      handler: dist/endpoints/api
+  - todoistWebhook:
+      handler: dist/endpoints/todoistWebhook
       events:
         - http: true
-          route: endpoint
+          route: todoistWebhook
+          authLevel: anonymous
+  - setBotWebhook:
+      handler: dist/endpoints/setBotWebhook
+      events:
+        - http: true
+          route: setBotWebhook
+          authLevel: anonymous
+  - botWebhook:
+      handler: dist/endpoints/botWebhook
+      events:
+        - http: true
+          route: botWebhook
           authLevel: anonymous
