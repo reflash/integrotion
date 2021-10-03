@@ -16,3 +16,15 @@ const errorLogger = createLogger({
 
 export const logDebug = debug(serviceLabel);
 export const logError = (message: string, ...args: any[]) => errorLogger.error(message, ...args);
+export function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export type TaskParams = {
+    id: string;
+    task: string;
+    type: string;
+    nid: string;
+};
+
+export const defaultAchievementPicture = 'https://tagn.files.wordpress.com/2016/06/rtdachi.jpg';
