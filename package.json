@@ -22,6 +22,7 @@
         "deploy:cleanup": "sls remove",
         "build:specific": "f(){ yarn workspace @edroom/$1 build; }; f",
         "build": "tsc",
+        "scripts:setWebhook": "node scripts/setWebhook.js",
         "test": "jest -c jest.config.unit.js --notify --passWithNoTests",
         "test:coverage": "yarn test --notify --coverage --passWithNoTests",
         "test:integration": "jest  -c jest.config.integration.js --notify --passWithNoTests",
