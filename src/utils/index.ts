@@ -1,6 +1,7 @@
 import { debug } from 'debug';
 import { createLogger, format, transports } from 'winston';
 export const serviceLabel = 'integrotion';
+import { Readable } from 'stream';
 
 const errorLogger = createLogger({
     level: 'error',
@@ -28,3 +29,9 @@ export type TaskParams = {
 };
 
 export const defaultAchievementPicture = 'https://tagn.files.wordpress.com/2016/06/rtdachi.jpg';
+export const stringToReadable = (str: string) => {
+    var s = new Readable()
+    s.push(str);
+    s.push(null);
+    return s;
+}

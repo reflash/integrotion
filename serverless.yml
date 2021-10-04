@@ -25,6 +25,12 @@ functions:
         - http: true
           route: todoistWebhook
           authLevel: anonymous
+  - todoistQueue:
+      handler: dist/endpoints/todoistQueue
+      events:
+        - queue: todoist
+          name: itemAdded
+          connection: AzureWebJobsStorage
   - setBotWebhook:
       handler: dist/endpoints/setBotWebhook
       events:
@@ -37,3 +43,9 @@ functions:
         - http: true
           route: botWebhook
           authLevel: anonymous
+  - ping:
+      handler: dist/endpoints/ping
+      events:
+        - timer:
+          name: timer
+          schedule: '0 */15 * * * *'

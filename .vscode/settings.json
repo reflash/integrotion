@@ -68,6 +68,20 @@
           "color": "terminal.ansiYellow",
           "overrideName": true
       },
+      "azurite": {
+        "path": "bash",
+        "args": ["-c", "yarn deploy:azurite"],
+        "icon": "symbol-field",
+        "color": "terminal.ansiCyan",
+        "overrideName": true
+      },
+      "setWebhook": {
+        "path": "bash",
+        "args": ["-c", "yarn scripts:setWebhook; read -p \"\n\nPress any key to continue...\""],
+        "icon": "symbol-event",
+        "color": "terminal.ansiRed",
+        "overrideName": true
+    },
       "test": {
           "path": "bash",
           "args": ["-c", "yarn test; read -p \"\n\nPress any key to continue...\""],
