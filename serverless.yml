@@ -48,4 +48,4 @@ functions:
       events:
         - timer:
           name: timer
-          schedule: '* */15 * * * *'
+          schedule: '0 */15 * * * *'
