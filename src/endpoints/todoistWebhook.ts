@@ -7,7 +7,7 @@ import { stringToReadable } from '../utils';
 exports.handler = handlerAdapter(async ({ req }) => {
     try {
         if (req && req.body && req.body.event_data && req.body.event_name === 'item:completed') {
-            const connectionString = process.env.AzureWebJobsStorage!;
+            const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING!;
             const queueName = "todoist";
             const queueServiceClient = QueueServiceClient.fromConnectionString(connectionString);
             const queueClient = queueServiceClient.getQueueClient(queueName);
