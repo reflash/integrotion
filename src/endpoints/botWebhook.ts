@@ -8,7 +8,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
         const update = req.body;
         await bot.handleUpdate(update);
     } catch(e) {
-        const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e)}`;
+        const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e, Object.getOwnPropertyNames(e))}`;
         await bot.api.sendMessage(process.env.USER_ID!, message);
     }
     
