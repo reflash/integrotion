@@ -49,3 +49,9 @@ functions:
         - timer:
           name: timer
           schedule: '0 */15 * * * *'
+  - morningJob:
+      handler: dist/endpoints/morningJob
+      events:
+        - timer:
+          name: timer
+          schedule: '0 0 8 * * *'
