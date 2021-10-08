@@ -1,12 +1,13 @@
 import { PagesRetrieveResponse } from "@notionhq/client/build/src/api-endpoints";
 import { NumberPropertyValue, SelectPropertyValue, DatePropertyValue, TitlePropertyValue, RichTextPropertyValue, RelationPropertyValue } from "@notionhq/client/build/src/api-types";
-import { TaskParams, defaultAchievementPicture } from "../utils";
+import { TaskParams, defaultAchievementPicture, sleep, randomN, addTime } from "../utils";
 import { bot } from "./bot";
 import { notion } from "./notion";
+import { createQuest, questIsPlannedForToday } from "./todoist";
 
 const isRepeating = (type: string) => 
     type === 'Daily' || type === 'Every two days' || type === 'Weekday' || type === 'Weekend' ||
-    type === 'Weekly' || type === 'Biweekly' || type === 'Monthly' || type === 'Yearly';
+    type === 'Weekly' || type === 'Biweekly' || type === 'Monthly' || type === 'Yearly' || type === 'Repeating';
 
 const isQuest = (type: string) => 
     type === 'Quest';
@@ -113,5 +114,36 @@ const sendQuestMessage = async (page: PagesRetrieveResponse, params: TaskParams)
         await bot.api.sendPhoto(process.env.USER_ID!, categoryImgUrl!, { caption: message});
     } else {
         await bot.api.sendMessage(process.env.USER_ID!, message);
+    }
+}
+
+export const createRandomQuests = async () => {
+    const quests = await notion.databases.query({ database_id: process.env.QUEST_NOTION_DATABASE!, 
+        filter: { property: 'Tags', multi_select: { contains: 'random' } }
+    });
+
+    for (const quest of quests.results.filter(questIsPlannedForToday)) {
+        const emoji = (quest.properties['Emoji'] as RichTextPropertyValue).rich_text?.[0]?.plain_text;
+        const name = (quest.properties['Name'] as TitlePropertyValue).title?.[0]?.plain_text;
+        const group1Amount = (quest.properties["Group 1 selection amount"] as NumberPropertyValue).number!;
+        const group2Amount = (quest.properties["Group 2 selection amount"] as NumberPropertyValue).number!;
+        const group1Length = (quest.properties["Group 1 length (minutes)"] as NumberPropertyValue).number!;
+        const group2Length = (quest.properties["Group 2 length (minutes)"] as NumberPropertyValue).number!;
+        const startTime = (quest.properties["Start time"] as RichTextPropertyValue).rich_text?.[0]?.plain_text!;
+        const randomGroup1 = (quest.properties["Children (Random - Group 1)"] as RelationPropertyValue).relation?.map(q => q?.id);
+        const randomGroup2 = (quest.properties["Children (Random - Group 2)"] as RelationPropertyValue).relation?.map(q => q?.id);
+
+        const selectedGroup1 = randomN(randomGroup1, group1Amount);
+        const selectedGroup2 = randomN(randomGroup2, group2Amount);
+
+        const group1Quests = await Promise.all(selectedGroup1.map(rid => notion.pages.retrieve({ page_id: rid })));
+        const group2Quests = await Promise.all(selectedGroup2.map(rid => notion.pages.retrieve({ page_id: rid })));
+
+        const group1Names = await Promise.all(group1Quests.map((quest, i) => createQuest(quest, `today ${addTime(startTime, i * group1Length)}`, group1Length)));
+        const group2Names = await Promise.all(group2Quests.map((quest, i) => createQuest(quest, `today ${addTime(startTime, group1Length * group1Amount + i * group2Length)}`, group2Length)));
+        
+        await bot.api.sendMessage(process.env.USER_ID!, 
+            `Random quests for today\'s ${emoji} ${name} are:\n${[...group1Names, ...group2Names].join('\n')}`
+        );
     }
 }
