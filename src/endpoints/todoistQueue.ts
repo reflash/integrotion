@@ -1,9 +1,8 @@
 import { handlerAdapter, success } from '../utils/azure';
 import { sleep } from '../utils';
-import { verifyAchievements } from '../service/achievement';
-import { bot } from '../service/bot';
 import { handleTask } from '../service/quests';
-import { parseTask } from '../service/todoist';
+import { parseTask } from '../service/quests/todoist';
+import { achievementNotionService, bot } from '../container';
 
 exports.handler = handlerAdapter(async ({ req }, itemAdded: any) => {
     try {
@@ -11,7 +10,12 @@ exports.handler = handlerAdapter(async ({ req }, itemAdded: any) => {
             const params = { id: itemAdded.event_data.id, ...parseTask(itemAdded.event_data.content)};
             await handleTask(params);
             await sleep(1100);
-            await verifyAchievements();
+
+            const achievements = await achievementNotionService.getNewAchievements();
+            for (const achievement of achievements) {
+                await achievementNotionService.finalizeAchievement(achievement);
+                await sleep(1100);
+            }
         }
     }
     catch(e) {

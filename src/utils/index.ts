@@ -28,7 +28,6 @@ export type TaskParams = {
     nid: string;
 };
 
-export const defaultAchievementPicture = 'https://tagn.files.wordpress.com/2016/06/rtdachi.jpg';
 export const stringToReadable = (str: string) => {
     var s = new Readable()
     s.push(str);
