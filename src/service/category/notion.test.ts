@@ -1,6 +1,6 @@
-import { Client } from "@notionhq/client/build/src";
+import { Client } from '@notionhq/client/build/src';
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import { CategoryNotionService, ICategoryNotionService } from "./notion";
+import { CategoryNotionService, ICategoryNotionService } from './notion';
 
 describe('CategoryNotionService', () => {
     const client = mockDeep<Client>();
@@ -18,10 +18,10 @@ describe('CategoryNotionService', () => {
         const mockId = 'category-id';
         const mockPage = {
             id: mockId,
-            icon: { type: 'file', file: { url: 'https://example.com' }},
+            icon: { type: 'file', file: { url: 'https://example.com' } },
             properties: {
-                'Name': { title: [{ plain_text: mockName }]},
-            }
+                Name: { title: [{ plain_text: mockName }] },
+            },
         } as any;
         client.pages.retrieve.mockResolvedValue(mockPage);
 

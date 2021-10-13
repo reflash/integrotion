@@ -1,12 +1,12 @@
-import { Context } from "grammy";
+import { Context } from 'grammy';
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import { IMiddleware } from "../common";
-import { UserIdCheckMiddleware } from "./userIdCheck";
+import { IMiddleware } from '../common';
+import { UserIdCheckMiddleware } from './userIdCheck';
 
 describe('UserIdCheckMiddleware', () => {
     const ctx = mockDeep<Context>();
     const adminUserId = '123';
-    
+
     let middleware: IMiddleware;
 
     beforeEach(() => {
@@ -24,7 +24,7 @@ describe('UserIdCheckMiddleware', () => {
         const mockNext: any = () => mockNextRet;
 
         const ret = await middleware.handle(ctx, mockNext);
-        
+
         expect(ret).toBe(mockNextRet);
     });
 

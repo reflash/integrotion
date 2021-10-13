@@ -1,10 +1,12 @@
 // tslint:disable: no-magic-numbers
-import { AzureFunction } from "@azure/functions";
+import { AzureFunction } from '@azure/functions';
 // NOTE: wrapper for handlers (response is set from returned value)
-export const handlerAdapter = (f: AzureFunction) => async (context: any, ...args: any[]) => {
-    const res = await f(context, ...args);
-    context.res = res;
-};
+export const handlerAdapter =
+    (f: AzureFunction) =>
+    async (context: any, ...args: any[]) => {
+        const res = await f(context, ...args);
+        context.res = res;
+    };
 
 export const statusWithMessage = (statusCode: number) => (message: any) => {
     return {

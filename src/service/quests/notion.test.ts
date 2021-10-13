@@ -1,7 +1,7 @@
-import { Client } from "@notionhq/client/build/src";
+// tslint:disable: no-magic-numbers
+import { Client } from '@notionhq/client/build/src';
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import TodoistApiREST from "todoist-api-ts";
-import { IQuestNotionService, QuestNotionService } from "./notion";
+import { IQuestNotionService, QuestNotionService } from './notion';
 
 describe('QuestNotionService', () => {
     const client = mockDeep<Client>();
@@ -20,17 +20,17 @@ describe('QuestNotionService', () => {
         const mockEmoji = '🧠';
         const mockCategoryId = 'category-id';
         const mockRewardId = 'reward-id';
-        const mockPage = { 
+        const mockPage = {
             url: 'https://example.com',
-            icon: { type: 'file', file: { url: 'https://example.com' }},
+            icon: { type: 'file', file: { url: 'https://example.com' } },
             properties: {
-                'Name': { title: [{ plain_text: mockName }]},
-                'Description': { rich_text: [{ plain_text: mockDescription }]},
-                'Emoji': { rich_text: [{ plain_text: mockEmoji }]},
-                'Tags': { multi_select: [{ name: 'quest' }]},
-                'Category': { relation: [{ id: mockCategoryId }]},
-                'Rewards': { relation: [{ id: mockRewardId }]},
-            }
+                Name: { title: [{ plain_text: mockName }] },
+                Description: { rich_text: [{ plain_text: mockDescription }] },
+                Emoji: { rich_text: [{ plain_text: mockEmoji }] },
+                Tags: { multi_select: [{ name: 'quest' }] },
+                Category: { relation: [{ id: mockCategoryId }] },
+                Rewards: { relation: [{ id: mockRewardId }] },
+            },
         } as any;
         const mockResponse = { results: [mockPage] } as any;
         client.databases.query.mockResolvedValue(mockResponse);
@@ -55,17 +55,17 @@ describe('QuestNotionService', () => {
         const mockEmoji = '🧠';
         const mockCategoryId = 'category-id';
         const mockRewardId = 'reward-id';
-        const mockPage = { 
+        const mockPage = {
             url: 'https://example.com',
-            icon: { type: 'file', file: { url: 'https://example.com' }},
+            icon: { type: 'file', file: { url: 'https://example.com' } },
             properties: {
-                'Name': { title: [{ plain_text: mockName }]},
-                'Description': { rich_text: [{ plain_text: mockDescription }]},
-                'Emoji': { rich_text: [{ plain_text: mockEmoji }]},
-                'Tags': { multi_select: [{ name: 'repeating' }, { name: 'daily' }]},
-                'Category': { relation: [{ id: mockCategoryId }]},
-                'Rewards': { relation: [{ id: mockRewardId }]},
-            }
+                Name: { title: [{ plain_text: mockName }] },
+                Description: { rich_text: [{ plain_text: mockDescription }] },
+                Emoji: { rich_text: [{ plain_text: mockEmoji }] },
+                Tags: { multi_select: [{ name: 'repeating' }, { name: 'daily' }] },
+                Category: { relation: [{ id: mockCategoryId }] },
+                Rewards: { relation: [{ id: mockRewardId }] },
+            },
         } as any;
         const mockResponse = { results: [mockPage] } as any;
         client.databases.query.mockResolvedValue(mockResponse);
@@ -92,25 +92,24 @@ describe('QuestNotionService', () => {
         const mockRewardId = 'reward-id';
         const mockStartTime = 'start-time';
         const mockQuestId = 'quest-id';
-        const mockPage = { 
+        const mockPage = {
             url: 'https://example.com',
-            icon: { type: 'file', file: { url: 'https://example.com' }},
+            icon: { type: 'file', file: { url: 'https://example.com' } },
             properties: {
-                'Name': { title: [{ plain_text: mockName }]},
-                'Description': { rich_text: [{ plain_text: mockDescription }]},
-                'Emoji': { rich_text: [{ plain_text: mockEmoji }]},
-                'Tags': { multi_select: [{ name: 'repeating' }, { name: 'random' }]},
-                'Category': { relation: [{ id: mockCategoryId }]},
-                'Rewards': { relation: [{ id: mockRewardId }]},
-                "Start time": { rich_text: [{ plain_text: mockStartTime }]},
-                "Group 1 selection amount":{ number: 1 },
-                "Group 2 selection amount": { number: 2 },
-                "Group 1 length (minutes)":{ number: 30 },
-                "Group 2 length (minutes)":{ number: 15 },
-                'Children (Random - Group 1)': { relation: [{ id: mockQuestId }]},
-                'Children (Random - Group 2)': { relation: [{ id: mockQuestId }]},
-
-            }
+                Name: { title: [{ plain_text: mockName }] },
+                Description: { rich_text: [{ plain_text: mockDescription }] },
+                Emoji: { rich_text: [{ plain_text: mockEmoji }] },
+                Tags: { multi_select: [{ name: 'repeating' }, { name: 'random' }] },
+                Category: { relation: [{ id: mockCategoryId }] },
+                Rewards: { relation: [{ id: mockRewardId }] },
+                'Start time': { rich_text: [{ plain_text: mockStartTime }] },
+                'Group 1 selection amount': { number: 1 },
+                'Group 2 selection amount': { number: 2 },
+                'Group 1 length (minutes)': { number: 30 },
+                'Group 2 length (minutes)': { number: 15 },
+                'Children (Random - Group 1)': { relation: [{ id: mockQuestId }] },
+                'Children (Random - Group 2)': { relation: [{ id: mockQuestId }] },
+            },
         } as any;
         const mockResponse = { results: [mockPage] } as any;
         client.databases.query.mockResolvedValue(mockResponse);

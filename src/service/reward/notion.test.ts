@@ -1,6 +1,6 @@
-import { Client } from "@notionhq/client/build/src";
+import { Client } from '@notionhq/client/build/src';
 import { mockDeep, mockReset } from 'jest-mock-extended';
-import { IRewardNotionService, RewardNotionService } from "./notion";
+import { IRewardNotionService, RewardNotionService } from './notion';
 
 describe('RewardNotionService', () => {
     const client = mockDeep<Client>();
@@ -19,8 +19,8 @@ describe('RewardNotionService', () => {
         const mockPage = {
             id: mockRewardId,
             properties: {
-                'Name': { title: [{ plain_text: mockName }]},
-            }
+                Name: { title: [{ plain_text: mockName }] },
+            },
         } as any;
         client.pages.retrieve.mockResolvedValue(mockPage);
 
