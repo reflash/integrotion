@@ -3,7 +3,7 @@ import { sleep } from '../../utils';
 import { ICategoryNotionService } from '../category/notion';
 import { TodoistClientFactory } from '../common';
 import { IRewardNotionService } from '../reward/notion';
-import { Quest } from './notion';
+import { Quest } from './types';
 
 export type TaskParams = {
     id: string;

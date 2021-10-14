@@ -1,3 +1,4 @@
+// tslint:disable: no-magic-numbers
 import { debug } from 'debug';
 import { createLogger, format, transports } from 'winston';
 export const serviceLabel = 'integrotion';
@@ -24,19 +25,19 @@ export function sleep(ms: number) {
 export const todayDate = () => new Date().toISOString().substr(0, 10);
 
 export const stringToReadable = (str: string) => {
-    let s = new Readable();
+    const s = new Readable();
     s.push(str);
     s.push(null);
     return s;
 };
 
 export function randomN(arr: any[], n: number) {
-    let result = new Array(n),
-        len = arr.length,
+    let len = arr.length;
+    const result = new Array(n),
         taken = new Array(len);
     if (n > len) throw new RangeError('getRandom: more elements taken than available');
     while (n--) {
-        let x = Math.floor(Math.random() * len);
+        const x = Math.floor(Math.random() * len);
         result[n] = arr[x in taken ? taken[x] : x];
         taken[x] = --len in taken ? taken[len] : len;
     }

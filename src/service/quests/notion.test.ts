@@ -65,6 +65,9 @@ describe('QuestNotionService', () => {
                 Tags: { multi_select: [{ name: 'repeating' }, { name: 'daily' }] },
                 Category: { relation: [{ id: mockCategoryId }] },
                 Rewards: { relation: [{ id: mockRewardId }] },
+                'Max times completed in a row': { number: 1 },
+                'Times completed': { number: 1 },
+                'Times completed in a row': { number: 1 },
             },
         } as any;
         const mockResponse = { results: [mockPage] } as any;
@@ -82,6 +85,10 @@ describe('QuestNotionService', () => {
         expect(quest.categoryId).toBe(mockCategoryId);
         expect(quest.rewardIds.length).toBe(1);
         expect(quest.rewardIds[0]).toBe(mockRewardId);
+        expect(quest.repeating).not.toBeUndefined();
+        expect(quest.repeating?.maxInARow).toBe(1);
+        expect(quest.repeating?.timesCompleted).toBe(1);
+        expect(quest.repeating?.timesCompletedInARow).toBe(1);
     });
 
     test('getQuestByName | random => parsed', async () => {
@@ -102,6 +109,9 @@ describe('QuestNotionService', () => {
                 Tags: { multi_select: [{ name: 'repeating' }, { name: 'random' }] },
                 Category: { relation: [{ id: mockCategoryId }] },
                 Rewards: { relation: [{ id: mockRewardId }] },
+                'Max times completed in a row': { number: 1 },
+                'Times completed': { number: 1 },
+                'Times completed in a row': { number: 1 },
                 'Start time': { rich_text: [{ plain_text: mockStartTime }] },
                 'Group 1 selection amount': { number: 1 },
                 'Group 2 selection amount': { number: 2 },
@@ -126,6 +136,10 @@ describe('QuestNotionService', () => {
         expect(quest.categoryId).toBe(mockCategoryId);
         expect(quest.rewardIds.length).toBe(1);
         expect(quest.rewardIds[0]).toBe(mockRewardId);
+        expect(quest.repeating).not.toBeUndefined();
+        expect(quest.repeating?.maxInARow).toBe(1);
+        expect(quest.repeating?.timesCompleted).toBe(1);
+        expect(quest.repeating?.timesCompletedInARow).toBe(1);
         expect(quest.random).not.toBeUndefined();
         expect(quest.random?.startTime).toBe(mockStartTime);
         expect(quest.random?.group1Amount).toBe(1);

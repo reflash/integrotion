@@ -8,11 +8,16 @@ export const getPageName = (page: Page): string => {
 };
 
 export const getPagePicture = (page: Page) => {
-    return page.icon?.type === 'file'
-        ? page.icon.file.url
-        : page.icon?.type === 'external'
-        ? page.icon?.external.url
-        : defaultAchievementPicture;
+    const coverUrl =
+        page.cover?.type === 'file' ? page.cover.file.url : page.cover?.type === 'external' ? page.cover?.external.url : undefined;
+    return (
+        coverUrl ??
+        (page.icon?.type === 'file'
+            ? page.icon?.file.url
+            : page.icon?.type === 'external'
+            ? page.icon?.external.url
+            : defaultAchievementPicture)
+    );
 };
 
 export type TodoistClientFactory = () => TodoistApiREST;
