@@ -12,7 +12,7 @@ export interface IQuestNotionService {
     getQuestByName(name: string): Promise<Quest>;
     getQuestsByTag(tag: string, pageFilter: (pages: Page[]) => Promise<Page[]>): Promise<Quest[]>;
     getChestById(id: string): Promise<Chest>;
-    updateQuestPage(id: string, properties: InputPropertyValueMap): Promise<Quest>;
+    updatePage(id: string, properties: InputPropertyValueMap): Promise<any>;
     addToHistory(questId: string, name: string, eventDescription: string): Promise<any>;
 }
 export class QuestNotionService implements IQuestNotionService {
@@ -47,13 +47,12 @@ export class QuestNotionService implements IQuestNotionService {
         return mapPageToChest(page);
     };
 
-    public updateQuestPage = async (id: string, properties: InputPropertyValueMap) => {
+    public updatePage = async (id: string, properties: InputPropertyValueMap) => {
         const page = await this.client.pages.update({
             page_id: id,
             properties,
             archived: false,
         });
-        return mapPageToQuest(page);
     };
 
     public addToHistory = async (questId: string, name: string, eventDescription: string) => {
