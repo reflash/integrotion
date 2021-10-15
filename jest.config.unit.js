@@ -4,7 +4,6 @@ module.exports = {
   modulePathIgnorePatterns: ["<rootDir>/dist/"],
   // ignore .js files
   testRegex: '(/__tests__/.*|(\\.|/)(test))\\.[t]sx?$',
-  setupFiles: ['./src/inversify.test.config.ts'],
   coverageReporters: ["lcov", "text"],
   coverageDirectory: "test-coverage",
   coverageThreshold: {

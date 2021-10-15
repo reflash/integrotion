@@ -24,6 +24,7 @@
         "source.addMissingImports": true
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.foldingImportsByDefault": true,
     "todohighlight.keywords": [
         {
         "text": "TODO:",
