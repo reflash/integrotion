@@ -26,7 +26,7 @@ const handleRepeating = async (params: TaskParams) => {
     const newTimesCompletedInARow = timesCompletedInARow + 1;
     const newMaxInARow = maxInARow > newTimesCompletedInARow ? maxInARow : newTimesCompletedInARow;
 
-    await questNotionService.updateQuestPage(quest.id, {
+    await questNotionService.updatePage(quest.id, {
         'Times completed': { number: newTimesCompleted } as NumberPropertyValue,
         'Times completed in a row': { number: newTimesCompletedInARow } as NumberPropertyValue,
         'Max times completed in a row': { number: newMaxInARow } as NumberPropertyValue,
@@ -44,7 +44,7 @@ const handleRepeating = async (params: TaskParams) => {
 const handleQuest = async (params: TaskParams) => {
     const quest = await questNotionService.getQuestById(params.nid);
     const now = new Date();
-    await questNotionService.updateQuestPage(quest.id, {
+    await questNotionService.updatePage(quest.id, {
         Status: { select: { name: 'COMPLETED' } } as SelectPropertyValue,
         'Completed on': { date: { start: now.toISOString() } } as DatePropertyValue,
     });
@@ -58,7 +58,7 @@ const handleChest = async (params: TaskParams) => {
     const chest = await questNotionService.getChestById(params.nid);
     const { actual, required, pictureUrl } = chest;
     const newActual = actual + 1;
-    await questNotionService.updateQuestPage(chest.id, {
+    await questNotionService.updatePage(chest.id, {
         Actual: { number: newActual } as NumberPropertyValue,
     });
 
