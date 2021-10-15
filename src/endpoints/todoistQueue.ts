@@ -80,7 +80,7 @@ const handleOther = async (params: TaskParams) => {
     await bot.api.sendMessage(process.env.USER_ID!, message);
 };
 
-export const handleTask = async (params: TaskParams) => {
+const handleTask = async (params: TaskParams) => {
     if (isRepeating(params.type)) return handleRepeating(params);
     else if (isQuest(params.type)) return handleQuest(params);
     else if (isChest(params.type)) return handleChest(params);
