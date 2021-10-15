@@ -9,7 +9,7 @@ import { handlerAdapter, success } from '../utils/azure';
 const questIsPlannedForToday = async (pages: Page[]) => {
     const allTasks = await todoist.getAllTasks();
     const today = todayDate();
-    const todayTasks = allTasks.filter(t => t.due.date === today);
+    const todayTasks = allTasks.filter(t => t.due && t.due.date === today);
     const plannedPages = pages.filter(page => todayTasks.some(t => t.content.includes(getPageName(page))));
 
     return plannedPages;
