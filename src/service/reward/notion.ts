@@ -20,11 +20,11 @@ export interface IRewardNotionService {
 export class RewardNotionService implements IRewardNotionService {
     constructor(private readonly client: Client) {}
 
-    public async getRewardById(id: string) {
+    public getRewardById = async (id: string) => {
         const page = await this.getPage(id);
 
         return mapPageToReward(page);
-    }
+    };
 
     private readonly getPage = (id: string) => {
         return this.client.pages.retrieve({ page_id: id });
