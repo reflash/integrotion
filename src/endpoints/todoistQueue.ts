@@ -1,6 +1,6 @@
 // tslint:disable: no-magic-numbers
 import { DatePropertyValue, NumberPropertyValue, SelectPropertyValue } from '@notionhq/client/build/src/api-types';
-import { achievementNotionService, bot, categoryNotionService, questNotionService } from '../container';
+import { achievementNotionService, bot, categoryNotionService, questNotionService, questTodoistService } from '../container';
 import { isChest, isQuest, isRepeating } from '../service/quests/mappers';
 import { parseTask, TaskParams } from '../service/quests/todoist';
 import { Quest } from '../service/quests/types';
@@ -21,6 +21,8 @@ const sendQuestMessage = async (quest: Quest, params: TaskParams) => {
 const handleRepeating = async (params: TaskParams) => {
     const quest = await questNotionService.getQuestById(params.nid);
     const { maxInARow, timesCompleted, timesCompletedInARow } = quest.repeating!;
+
+    await questTodoistService.deleteTaskSubtasks(params.id);
 
     const newTimesCompleted = timesCompleted + 1;
     const newTimesCompletedInARow = timesCompletedInARow + 1;

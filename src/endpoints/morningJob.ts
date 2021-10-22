@@ -10,13 +10,23 @@ const questIsPlannedForToday = async (pages: Page[]) => {
     const allTasks = await todoist.getAllTasks();
     const today = todayDate();
     const todayTasks = allTasks.filter(t => t.due && t.due.date === today);
-    const plannedPages = pages.filter(page => todayTasks.some(t => t.content.includes(getPageName(page))));
-
+    const plannedPages = pages
+        .map(page => ({ page, task: todayTasks.find(t => t.content.includes(getPageName(page))) }))
+        .filter(({ task }) => task !== undefined)
+        .filter(({ task }) => !allTasks.some(t => t.parent_id === task!.id))
+        .map(({ page }) => page);
     return plannedPages;
+};
+
+const getQuestTask = async (name: string) => {
+    const allTasks = await todoist.getAllTasks();
+    return allTasks.find(t => t.content.includes(name))!;
 };
 
 const createRandomQuests = async (quests: Quest[]) => {
     for (const { random, emoji, name } of quests) {
+        const { id } = await getQuestTask(name);
+
         const { group1Ids, group2Ids, group1Amount, group2Amount, startTime, group1Length, group2Length } = random!;
         const selectedGroup1 = randomN(group1Ids, group1Amount);
         const selectedGroup2 = randomN(group2Ids, group2Amount);
@@ -25,18 +35,10 @@ const createRandomQuests = async (quests: Quest[]) => {
         const group2Quests = await Promise.all(selectedGroup2.map(questNotionService.getQuestById));
 
         const group1Names = await Promise.all(
-            group1Quests.map((quest, i) =>
-                questTodoistService.createQuestTask(quest, `today ${addTime(startTime, i * group1Length)}`, group1Length),
-            ),
+            group1Quests.map((quest, i) => questTodoistService.createQuestTask(quest, undefined, group1Length, id)),
         );
         const group2Names = await Promise.all(
-            group2Quests.map((quest, i) =>
-                questTodoistService.createQuestTask(
-                    quest,
-                    `today ${addTime(startTime, group1Length * group1Amount + i * group2Length)}`,
-                    group2Length,
-                ),
-            ),
+            group2Quests.map((quest, i) => questTodoistService.createQuestTask(quest, undefined, group2Length, id)),
         );
 
         await bot.api.sendMessage(
