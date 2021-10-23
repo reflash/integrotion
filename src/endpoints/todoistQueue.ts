@@ -8,14 +8,13 @@ import { sleep } from '../utils';
 import { handlerAdapter, success } from '../utils/azure';
 
 const sendQuestMessage = async (quest: Quest, params: TaskParams) => {
-    const message = `Task completed ${params.id}\n${quest.emoji} ${quest.name}\n${quest.description}`;
-
+    let message = `Task completed ${params.id}\n${quest.emoji} ${quest.name}\n${quest.description}`;
     if (quest.categoryId) {
         const category = await categoryNotionService.getCategoryById(quest.categoryId);
-        await bot.api.sendPhoto(process.env.USER_ID!, category.pictureUrl, { caption: message });
-    } else {
-        await bot.api.sendMessage(process.env.USER_ID!, message);
+        message += `\nCategory: ${category.name}`;
     }
+
+    await bot.api.sendPhoto(process.env.USER_ID!, quest.pictureUrl, { caption: message });
 };
 
 const handleRepeating = async (params: TaskParams) => {
