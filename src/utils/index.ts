@@ -62,3 +62,5 @@ function minutesToTime(minutes: number) {
     const res = ((minutes / 60) | 0) + ':' + z(minutes % 60 | 0);
     return res;
 }
+
+export const isGifImage = (filename: string) => filename.includes('.gif');

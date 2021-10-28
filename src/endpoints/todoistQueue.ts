@@ -4,7 +4,7 @@ import { achievementNotionService, bot, categoryNotionService, questNotionServic
 import { isChest, isQuest, isRepeating } from '../service/quests/mappers';
 import { parseTask, TaskParams } from '../service/quests/todoist';
 import { Quest } from '../service/quests/types';
-import { sleep } from '../utils';
+import { isGifImage, sleep } from '../utils';
 import { handlerAdapter, success } from '../utils/azure';
 
 const sendQuestMessage = async (quest: Quest, params: TaskParams) => {
@@ -14,7 +14,9 @@ const sendQuestMessage = async (quest: Quest, params: TaskParams) => {
         message += `\nCategory: ${category.name}`;
     }
 
-    await bot.api.sendPhoto(process.env.USER_ID!, quest.pictureUrl, { caption: message });
+    // NOTE: use sendAnimation to send gifs (telegram doesn't process gifs via sendPhoto api)
+    if (isGifImage(quest.pictureUrl)) return bot.api.sendAnimation(process.env.USER_ID!, quest.pictureUrl, { caption: message });
+    return bot.api.sendPhoto(process.env.USER_ID!, quest.pictureUrl, { caption: message });
 };
 
 const handleRepeating = async (params: TaskParams) => {
