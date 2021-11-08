@@ -1,7 +1,7 @@
 import { Client } from '@notionhq/client/build/src';
-import { DatePropertyValue, NumberPropertyValue, Page } from '@notionhq/client/build/src/api-types';
 import { Bot } from 'grammy';
 import { todayDate } from '../../utils';
+import { DatePropertyValue, NumberPropertyValue, Page } from '../../utils/types';
 import { getPageName, getPagePicture } from '../common';
 
 const mapPageToAchievement = (page: Page): Achievement => {

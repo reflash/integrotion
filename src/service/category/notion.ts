@@ -1,5 +1,5 @@
 import { Client } from '@notionhq/client/build/src';
-import { Page } from '@notionhq/client/build/src/api-types';
+import { Page } from '../../utils/types';
 import { getPageName, getPagePicture } from '../common';
 
 const mapPageToCategory = (page: Page): Category => {

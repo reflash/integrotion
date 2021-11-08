@@ -28,6 +28,8 @@ export const parseTask = (content: string) => {
 
 export interface IQuestTodoistService {
     createQuestTask(quest: Quest, due: string, length?: number): Promise<string>;
+    getTaskIdByName(name: string): Promise<number>;
+    updateTaskName(taskId: number, newName: string): Promise<any>;
     deleteTaskSubtasks(taskId: number): Promise<any>;
 }
 export class QuestTodoistService implements IQuestTodoistService {
@@ -44,6 +46,19 @@ export class QuestTodoistService implements IQuestTodoistService {
         await todoist.createNewTask(createParams);
 
         return `${quest.emoji} ${quest.name}${lengthContent}`;
+    };
+
+    public getTaskIdByName = async (name: string) => {
+        const todoist = this.todoistFactory();
+        const allTasks = await todoist.getAllTasks();
+        const tasks = allTasks.filter(t => t.content.includes(name));
+        const task = tasks[0];
+        return task.id;
+    };
+
+    public updateTaskName = async (taskId: number, newName: string) => {
+        const todoist = this.todoistFactory();
+        await todoist.updateTaskById(taskId, { content: newName } as any);
     };
 
     public deleteTaskSubtasks = async (taskId: number) => {

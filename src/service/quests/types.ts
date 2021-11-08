@@ -23,6 +23,18 @@ export type Chest = {
     pictureUrl: string;
 };
 
+export type VaultGoal = {
+    id: string;
+    name: string;
+    isGoal: boolean;
+    emoji: string;
+    url: string;
+    progress: string;
+    completed: boolean;
+    lastWeekBase: number;
+    actual: number;
+};
+
 export type Quest = {
     id: string;
     name: string;

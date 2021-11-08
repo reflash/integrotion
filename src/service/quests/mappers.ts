@@ -1,11 +1,13 @@
 // tslint:disable: no-magic-numbers
 import {
+    FormulaPropertyValue,
     MultiSelectPropertyValue,
     NumberPropertyValue,
     Page,
     RelationPropertyValue,
     RichTextPropertyValue,
-} from '@notionhq/client/build/src/api-types';
+    SelectPropertyValue,
+} from '../../utils/types';
 import { getPageName, getPagePicture } from '../common';
 import { Quest } from './types';
 
@@ -69,6 +71,27 @@ export const mapPageToChest = (page: Page) => {
         actual: (page.properties['Actual'] as NumberPropertyValue).number!,
         required: (page.properties['Required'] as NumberPropertyValue).number!,
         pictureUrl: getPagePicture(page),
+    };
+};
+
+export const mapPageToVaultGoal = (page: Page, progress: string, actual: number) => {
+    const name = getPageName(page);
+    const status = (page.properties['Status'] as SelectPropertyValue).select?.name;
+    const isGoal = status === 'Goal';
+    const url = page.url.replace('https', 'notion');
+    const emoji = page.icon?.type === 'emoji' ? page.icon.emoji : '🎖';
+    const completed = ((page.properties['Completed'] as FormulaPropertyValue).formula as any).boolean ?? false;
+    const lastWeekBase = (page.properties['Last week base'] as NumberPropertyValue).number!;
+    return {
+        id: page.id,
+        name,
+        isGoal,
+        url,
+        emoji,
+        progress,
+        completed,
+        lastWeekBase,
+        actual,
     };
 };
 

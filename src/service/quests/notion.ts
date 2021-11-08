@@ -1,18 +1,15 @@
 import { Client } from '@notionhq/client/build/src';
-import { InputPropertyValueMap, PagesRetrieveResponse } from '@notionhq/client/build/src/api-endpoints';
-import { Page, RichTextPropertyValue, TitlePropertyValue } from '@notionhq/client/build/src/api-types';
-import { Bot } from 'grammy';
-import { ICategoryNotionService } from '../category/notion';
-import { mapPageToChest, mapPageToQuest } from './mappers';
-import { TaskParams } from './todoist';
-import { Chest, Quest } from './types';
+import { Page, PropertyValueMap, RichTextPropertyValue, TitlePropertyValue } from '../../utils/types';
+import { mapPageToChest, mapPageToQuest, mapPageToVaultGoal } from './mappers';
+import { Chest, Quest, VaultGoal } from './types';
 
 export interface IQuestNotionService {
     getQuestById(id: string): Promise<Quest>;
     getQuestByName(name: string): Promise<Quest>;
     getQuestsByTag(tag: string, pageFilter: (pages: Page[]) => Promise<Page[]>): Promise<Quest[]>;
     getChestById(id: string): Promise<Chest>;
-    updatePage(id: string, properties: InputPropertyValueMap): Promise<any>;
+    getVaultGoals(): Promise<VaultGoal[]>;
+    updatePage(id: string, properties: PropertyValueMap): Promise<any>;
     addToHistory(questId: string, name: string, eventDescription: string): Promise<any>;
 }
 export class QuestNotionService implements IQuestNotionService {
@@ -47,7 +44,25 @@ export class QuestNotionService implements IQuestNotionService {
         return mapPageToChest(page);
     };
 
-    public updatePage = async (id: string, properties: InputPropertyValueMap) => {
+    public getVaultGoals = async () => {
+        const { results: pages } = await this.client.databases.query({
+            database_id: process.env.VAULT_NOTION_DATABASE!,
+        });
+        return Promise.all(
+            pages.map(async p => {
+                const progressPropId = p.properties['Progress'].id;
+                const progressProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: progressPropId });
+                const progress = (progressProp as any)?.formula?.string ?? '';
+
+                const actualPropId = p.properties['Actual'].id;
+                const actualProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: actualPropId });
+                const actual = (actualProp as any)?.formula?.number ?? 0;
+                return mapPageToVaultGoal(p, progress, actual);
+            }),
+        );
+    };
+
+    public updatePage = async (id: string, properties: PropertyValueMap) => {
         const page = await this.client.pages.update({
             page_id: id,
             properties,

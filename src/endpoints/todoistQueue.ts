@@ -1,11 +1,11 @@
 // tslint:disable: no-magic-numbers
-import { DatePropertyValue, NumberPropertyValue, SelectPropertyValue } from '@notionhq/client/build/src/api-types';
 import { achievementNotionService, bot, categoryNotionService, questNotionService, questTodoistService } from '../container';
 import { isChest, isQuest, isRepeating } from '../service/quests/mappers';
 import { parseTask, TaskParams } from '../service/quests/todoist';
 import { Quest } from '../service/quests/types';
 import { isGifImage, sleep } from '../utils';
 import { handlerAdapter, success } from '../utils/azure';
+import { DatePropertyValue, NumberPropertyValue, SelectPropertyValue } from '../utils/types';
 
 const sendQuestMessage = async (quest: Quest, params: TaskParams) => {
     let message = `Task completed ${params.id}\n${quest.emoji} ${quest.name}\n${quest.description}`;
