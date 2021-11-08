@@ -1,6 +1,6 @@
 import { InputFile } from 'grammy';
 import { bot, questNotionService, questTodoistService, todoist } from '../container';
-import { getPageName } from '../service/common';
+import { getPageName, goalCompletePicture, goalCompletePicture, goalIncompletePicture } from '../service/common';
 import { Quest } from '../service/quests/types';
 import { addTime, randomN, stringToReadable, todayDate } from '../utils';
 import { handlerAdapter, success } from '../utils/azure';
@@ -51,18 +51,24 @@ const createRandomQuests = async (quests: Quest[]) => {
 const updateGoalProgress = async () => {
     const goalsWithSubgoals = await questNotionService.getVaultGoals();
     const goals = goalsWithSubgoals.filter(g => g.isGoal);
+    const subgoals = goalsWithSubgoals.filter(g => !g.isGoal);
 
     for (const goal of goals) {
         const newName = `* ${goal.progress} | **[Goal]** ${goal.emoji} [${goal.name}](${goal.url})`;
         const taskId = await questTodoistService.getTaskIdByName(goal.name);
         await questTodoistService.updateTaskName(taskId, newName);
     }
+
+    for (const subgoal of subgoals) {
+        const coverUrl = subgoal.completed ? goalCompletePicture : goalIncompletePicture;
+        await questNotionService.updatePage(subgoal.id, {}, coverUrl);
+    }
 };
 
 exports.handler = handlerAdapter(async ({ req }) => {
     try {
-        // const quests = await questNotionService.getQuestsByTag('random', questIsPlannedForToday);
-        // await createRandomQuests(quests);
+        const quests = await questNotionService.getQuestsByTag('random', questIsPlannedForToday);
+        await createRandomQuests(quests);
         await updateGoalProgress();
     } catch (e) {
         const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e, Object.getOwnPropertyNames(e))}`;
