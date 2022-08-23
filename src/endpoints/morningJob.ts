@@ -1,6 +1,6 @@
 import { InputFile } from 'grammy';
 import { bot, questNotionService, questTodoistService, todoist } from '../container';
-import { getPageName, goalCompletePicture, goalCompletePicture, goalIncompletePicture } from '../service/common';
+import { getPageName, goalCompletePicture, goalIncompletePicture } from '../service/common';
 import { Quest } from '../service/quests/types';
 import { addTime, randomN, stringToReadable, todayDate } from '../utils';
 import { handlerAdapter, success } from '../utils/azure';
