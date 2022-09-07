@@ -1,6 +1,6 @@
 import { InputFile } from 'grammy';
 import { bot, questNotionService, questTodoistService, todoist } from '../container';
-import { getPageName, goalCompletePicture, goalCompletePicture, goalIncompletePicture } from '../service/common';
+import { getPageName, goalCompletePicture, goalIncompletePicture } from '../service/common';
 import { Quest } from '../service/quests/types';
 import { addTime, randomN, stringToReadable, todayDate } from '../utils';
 import { handlerAdapter, success } from '../utils/azure';
@@ -69,7 +69,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
     try {
         const quests = await questNotionService.getQuestsByTag('random', questIsPlannedForToday);
         await createRandomQuests(quests);
-        await updateGoalProgress();
+        // await updateGoalProgress();
     } catch (e) {
         const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e, Object.getOwnPropertyNames(e))}`;
         const stream = stringToReadable(message);
