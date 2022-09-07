@@ -9,7 +9,6 @@
     "forwardPorts": [7071],
     "extensions": [
 		"ms-azuretools.vscode-azurefunctions",
-		"coenraads.bracket-pair-colorizer-2",
 		"mikestead.dotenv",
 		"usernamehw.errorlens",
 		"eamodio.gitlens",
