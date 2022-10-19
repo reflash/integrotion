@@ -1,4 +1,4 @@
-import { Client } from '@notionhq/client/build/src';
+import { Client, isFullPage } from '@notionhq/client/build/src';
 import { Bot } from 'grammy';
 import { todayDate } from '../../utils';
 import { DatePropertyValue, NumberPropertyValue, Page } from '../../utils/types';
@@ -38,7 +38,7 @@ export class AchievementNotionService implements IAchievementNotionService {
             },
         });
 
-        return achievements.results.map(mapPageToAchievement);
+        return achievements.results.filter(isFullPage).map(mapPageToAchievement);
     }
 
     public async finalizeAchievement(achievement: Achievement) {

@@ -1,4 +1,5 @@
-import { Client } from '@notionhq/client/build/src';
+import { Client, isFullPage } from '@notionhq/client/build/src';
+import { PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 import { Page, PropertyValueMap, RichTextPropertyValue, TitlePropertyValue } from '../../utils/types';
 import { mapPageToChest, mapPageToQuest, mapPageToVaultGoal } from './mappers';
 import { Chest, Quest, VaultGoal } from './types';
@@ -17,17 +18,17 @@ export class QuestNotionService implements IQuestNotionService {
 
     public getQuestById = async (id: string) => {
         const page = await this.getPage(id);
-        return mapPageToQuest(page);
+        return mapPageToQuest(page as Page);
     };
 
     public getQuestByName = async (name: string) => {
         const pages = await this.client.databases.query({
             database_id: process.env.QUEST_NOTION_DATABASE!,
-            filter: { property: 'Name', text: { contains: name } },
+            filter: { property: 'Name', title: { contains: name } },
         });
         const page = pages.results[0];
 
-        return mapPageToQuest(page);
+        return mapPageToQuest(page as Page);
     };
 
     public getQuestsByTag = async (tag: string, pageFilter: (pages: Page[]) => Promise<Page[]>) => {
@@ -35,29 +36,31 @@ export class QuestNotionService implements IQuestNotionService {
             database_id: process.env.QUEST_NOTION_DATABASE!,
             filter: { property: 'Tags', multi_select: { contains: tag } },
         });
-        const filteredPages = await pageFilter(pages.results);
+        const filteredPages = await pageFilter(pages.results.filter(isFullPage));
         return filteredPages.map(mapPageToQuest);
     };
 
     public getChestById = async (id: string) => {
         const page = await this.getPage(id);
-        return mapPageToChest(page);
+        return mapPageToChest(page as Page);
     };
-
+    
     public getVaultGoals = async () => {
         const { results: pages } = await this.client.databases.query({
             database_id: process.env.VAULT_NOTION_DATABASE!,
         });
         return Promise.all(
-            pages.map(async p => {
-                const progressPropId = p.properties['Progress'].id;
-                const progressProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: progressPropId });
-                const progress = (progressProp as any)?.formula?.string ?? '';
+            pages
+                .filter(isFullPage)
+                .map(async p => {
+                // const progressPropId = p.properties['Progress'].id;
+                // const progressProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: progressPropId });
+                // const progress = (progressProp as any)?.formula?.string ?? '';
 
-                const actualPropId = p.properties['Actual'].id;
-                const actualProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: actualPropId });
-                const actual = (actualProp as any)?.formula?.number ?? 0;
-                return mapPageToVaultGoal(p, progress, actual);
+                // const actualPropId = p.properties['Actual'].id;
+                // const actualProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: actualPropId });
+                // const actual = (actualProp as any)?.formula?.number ?? 0;
+                return mapPageToVaultGoal(p);
             }),
         );
     };

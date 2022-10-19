@@ -50,11 +50,11 @@ const createRandomQuests = async (quests: Quest[]) => {
 
 const updateGoalProgress = async () => {
     const goalsWithSubgoals = await questNotionService.getVaultGoals();
-    const goals = goalsWithSubgoals.filter(g => g.isGoal);
-    const subgoals = goalsWithSubgoals.filter(g => !g.isGoal);
+    const goals = goalsWithSubgoals.filter(g => g.isGoal && g.active);
+    const subgoals = goalsWithSubgoals.filter(g => !g.isGoal && g.active);
 
     for (const goal of goals) {
-        const newName = `* ${goal.progress} | **[Goal]** ${goal.emoji} [${goal.name}](${goal.url})`;
+        const newName = `* ${goal.emoji} ${goal.progress} | **[Goal]** [${goal.name}](${goal.url})`;
         const taskId = await questTodoistService.getTaskIdByName(goal.name);
         await questTodoistService.updateTaskName(taskId, newName);
     }
@@ -69,7 +69,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
     try {
         const quests = await questNotionService.getQuestsByTag('random', questIsPlannedForToday);
         await createRandomQuests(quests);
-        // await updateGoalProgress();
+        await updateGoalProgress();
     } catch (e) {
         const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e, Object.getOwnPropertyNames(e))}`;
         const stream = stringToReadable(message);

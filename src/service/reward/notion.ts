@@ -23,7 +23,7 @@ export class RewardNotionService implements IRewardNotionService {
     public getRewardById = async (id: string) => {
         const page = await this.getPage(id);
 
-        return mapPageToReward(page);
+        return mapPageToReward(page as Page);
     };
 
     private readonly getPage = (id: string) => {
