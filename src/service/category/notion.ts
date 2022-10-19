@@ -25,7 +25,7 @@ export class CategoryNotionService implements ICategoryNotionService {
     public async getCategoryById(id: string) {
         const page = await this.getPage(id);
 
-        return mapPageToCategory(page);
+        return mapPageToCategory(page as Page);
     }
 
     private readonly getPage = (id: string) => {

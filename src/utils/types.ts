@@ -1,8 +1,8 @@
-import type { GetPageResponse } from '@notionhq/client/build/src/api-endpoints';
+import type { GetPageResponse, PageObjectResponse } from '@notionhq/client/build/src/api-endpoints';
 
 /** Property **/
-export type Page = GetPageResponse;
-export type PropertyValueMap = Page['properties'];
+export type Page = PageObjectResponse;
+export type PropertyValueMap = PageObjectResponse['properties'];
 export type PropertyValue = PropertyValueMap[string];
 
 export type PropertyValueType = PropertyValue['type'];
@@ -10,6 +10,7 @@ export type PropertyValueType = PropertyValue['type'];
 export type ExtractedPropertyValue<TType extends PropertyValueType> = Extract<PropertyValue, { type: TType }>;
 
 export type TitlePropertyValue = ExtractedPropertyValue<'title'>;
+export type BooleanPropertyValue = ExtractedPropertyValue<'checkbox'>;
 export type RichTextPropertyValue = ExtractedPropertyValue<'rich_text'>;
 export type NumberPropertyValue = ExtractedPropertyValue<'number'>;
 export type UrlPropertyValue = ExtractedPropertyValue<'url'>;

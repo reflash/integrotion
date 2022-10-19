@@ -1,11 +1,13 @@
 // tslint:disable: no-magic-numbers
 import {
+    BooleanPropertyValue,
     FormulaPropertyValue,
     MultiSelectPropertyValue,
     NumberPropertyValue,
     Page,
     RelationPropertyValue,
     RichTextPropertyValue,
+    RollupPropertyValue,
     SelectPropertyValue,
 } from '../../utils/types';
 import { getPageName, getPagePicture } from '../common';
@@ -74,21 +76,29 @@ export const mapPageToChest = (page: Page) => {
     };
 };
 
-export const mapPageToVaultGoal = (page: Page, progress: string, actual: number) => {
+export const mapPageToVaultGoal = (page: Page/*, progress: string, actual: number*/) => {
     const name = getPageName(page);
+    const active = (page.properties['Active'] as BooleanPropertyValue).checkbox || ((page.properties['Active (Goal - 2)'] as FormulaPropertyValue).formula as any).boolean;
+    const actualG = ((page.properties['Actual (Goal)'] as RollupPropertyValue)?.rollup as any).number;
+    const required = (page.properties['Required'] as NumberPropertyValue).number!;
+    const actual = actualG <= required ? actualG : required;
+    const progressPercent = actual / required;
+    const progress = "▓▓▓▓▓▓▓▓▓▓".slice(0, Math.round(progressPercent*10)) + "░░░░░░░░░░".slice(0, Math.round((1 - progressPercent)* 10)) + " " + actual + "/" + required;
+    const progressDecorated = progress.slice(0, 3) + '|' + progress.slice(3, 5) + '|' + progress.slice(5);
     const status = (page.properties['Status'] as SelectPropertyValue).select?.name;
     const isGoal = status === 'Goal';
     const url = page.url.replace('https', 'notion');
     const emoji = page.icon?.type === 'emoji' ? page.icon.emoji : '🎖';
-    const completed = ((page.properties['Completed'] as FormulaPropertyValue).formula as any).boolean ?? false;
+    const completed = actualG >= required;
     const lastWeekBase = (page.properties['Last week base'] as NumberPropertyValue).number!;
     return {
         id: page.id,
         name,
+        active,
         isGoal,
         url,
         emoji,
-        progress,
+        progress: progressDecorated,
         completed,
         lastWeekBase,
         actual,
