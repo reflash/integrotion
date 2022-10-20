@@ -26,6 +26,7 @@ jobs:
         echo TODOIST_TOKEN=$TODOIST_TOKEN >> .env.production
         echo QUEST_NOTION_DATABASE=$QUEST_NOTION_DATABASE >> .env.production
         echo HISTORY_NOTION_DATABASE=$HISTORY_NOTION_DATABASE >> .env.production
+        echo VAULT_NOTION_DATABASE=$VAULT_NOTION_DATABASE >> .env.production
         echo ACHIEVEMENTS_NOTION_DATABASE=$ACHIEVEMENTS_NOTION_DATABASE >> .env.production
         echo NODE_ENV=$NODE_ENV >> .env.production
         echo BOT_TOKEN=$BOT_TOKEN >> .env.production
@@ -37,6 +38,7 @@ jobs:
         TODOIST_TOKEN: ${{secrets.TODOIST_TOKEN}}
         QUEST_NOTION_DATABASE: ${{secrets.QUEST_NOTION_DATABASE}}
         HISTORY_NOTION_DATABASE: ${{secrets.HISTORY_NOTION_DATABASE}}
+        VAULT_NOTION_DATABASE: ${{secrets.VAULT_NOTION_DATABASE}}
         ACHIEVEMENTS_NOTION_DATABASE: ${{secrets.ACHIEVEMENTS_NOTION_DATABASE}}
         NODE_ENV: ${{secrets.NODE_ENV}}
         BOT_TOKEN: ${{secrets.BOT_TOKEN}}
