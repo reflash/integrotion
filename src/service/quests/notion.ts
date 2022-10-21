@@ -52,16 +52,7 @@ export class QuestNotionService implements IQuestNotionService {
         return Promise.all(
             pages
                 .filter(isFullPage)
-                .map(async p => {
-                // const progressPropId = p.properties['Progress'].id;
-                // const progressProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: progressPropId });
-                // const progress = (progressProp as any)?.formula?.string ?? '';
-
-                // const actualPropId = p.properties['Actual'].id;
-                // const actualProp = await this.client.pages.properties.retrieve({ page_id: p.id, property_id: actualPropId });
-                // const actual = (actualProp as any)?.formula?.number ?? 0;
-                return mapPageToVaultGoal(p);
-            }),
+                .map(mapPageToVaultGoal),
         );
     };
 

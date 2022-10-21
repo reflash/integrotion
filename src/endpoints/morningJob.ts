@@ -60,7 +60,9 @@ const updateGoalProgress = async () => {
     }
 
     for (const subgoal of subgoals) {
-        const coverUrl = subgoal.completed ? goalCompletePicture : goalIncompletePicture;
+        const goal = goals.find(g => g.id === subgoal.goalId)!;
+        const completed = subgoal.required <= goal.actual;
+        const coverUrl = completed ? goalCompletePicture : goalIncompletePicture;
         await questNotionService.updatePage(subgoal.id, {}, coverUrl);
     }
 };
