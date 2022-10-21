@@ -91,6 +91,9 @@ export const mapPageToVaultGoal = (page: Page/*, progress: string, actual: numbe
     const emoji = page.icon?.type === 'emoji' ? page.icon.emoji : '🎖';
     const completed = actualG >= required;
     const lastWeekBase = (page.properties['Last week base'] as NumberPropertyValue).number!;
+    const goalsRelation = ((page.properties['Goal'] as RelationPropertyValue)?.relation);
+    const goalId = goalsRelation.length > 0 ? goalsRelation[0].id : null;
+
     return {
         id: page.id,
         name,
@@ -102,6 +105,8 @@ export const mapPageToVaultGoal = (page: Page/*, progress: string, actual: numbe
         completed,
         lastWeekBase,
         actual,
+        required,
+        goalId
     };
 };
 
