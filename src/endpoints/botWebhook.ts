@@ -12,7 +12,7 @@ exports.handler = handlerAdapter(async ({ req }) => {
     } catch (e) {
         const message = `Request: ${JSON.stringify(req)}\nError: ${JSON.stringify(e, Object.getOwnPropertyNames(e))}`;
         const stream = stringToReadable(message);
-        await bot.api.sendDocument(process.env.USER_ID!, new InputFile(stream));
+        await bot.api.sendDocument(process.env.USER_ID!, new InputFile(stream, `botWebhook-error-${Date.now().toLocaleString()}`));
     }
 
     return success('Message processed');
