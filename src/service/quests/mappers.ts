@@ -122,10 +122,11 @@ export const mapPageToQuest = (page: Page): Quest => {
     const url = page.url.replace('https', 'notion');
     const categoryId = (page.properties['Category'] as RelationPropertyValue).relation?.[0]?.id;
     const rewardIds = (page.properties['Rewards'] as RelationPropertyValue).relation?.map(r => r?.id!);
+    const goalId = (page.properties['Relation (Great Vault)'] as RelationPropertyValue).relation?.[0]?.id;
 
     const random = mapRandomProps(page, tags);
     const repeating = mapRepeatingProps(page, isRepeating);
     const pictureUrl = getPagePicture(page);
 
-    return { id, name, description, emoji, pictureUrl, priority, type, url, categoryId, rewardIds, random, repeating };
+    return { id, name, description, emoji, pictureUrl, priority, type, url, goalId, categoryId, rewardIds, random, repeating };
 };

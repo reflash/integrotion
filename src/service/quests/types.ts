@@ -48,6 +48,7 @@ export type Quest = {
 
     categoryId: string;
     rewardIds: string[];
+    goalId: string;
 
     random?: Random;
     repeating?: Repeating;
