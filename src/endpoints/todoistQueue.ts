@@ -1,5 +1,6 @@
 // tslint:disable: no-magic-numbers
 import { achievementNotionService, bot, categoryNotionService, questNotionService, questTodoistService } from '../container';
+import { goalCompletePicture, goalIncompletePicture } from '../service/common';
 import { isChest, isQuest, isRepeating } from '../service/quests/mappers';
 import { parseTask, TaskParams } from '../service/quests/todoist';
 import { Quest } from '../service/quests/types';
@@ -34,6 +35,25 @@ const handleRepeating = async (params: TaskParams) => {
         'Times completed in a row': { number: newTimesCompletedInARow } as NumberPropertyValue,
         'Max times completed in a row': { number: newMaxInARow } as NumberPropertyValue,
     });
+    
+    if (quest.goalId){
+        const goalsWithSubgoals = await questNotionService.getVaultGoals();
+        const goal = goalsWithSubgoals.find(g => g.isGoal && g.active && g.id === quest.goalId);
+
+        if (goal) {
+            const subgoals = goalsWithSubgoals.filter(g => !g.isGoal && g.active && g.goalId === quest.goalId);
+    
+            const newName = `* ${goal.emoji} ${goal.progress} | **[Goal]** [${goal.name}](${goal.url})`;
+            const taskId = await questTodoistService.getTaskIdByName(goal.name);
+            await questTodoistService.updateTaskName(taskId, newName);
+
+            for (const subgoal of subgoals) {
+                const completed = subgoal.required <= goal.actual;
+                const coverUrl = completed ? goalCompletePicture : goalIncompletePicture;
+                await questNotionService.updatePage(subgoal.id, {}, coverUrl);
+            }
+        }
+    }
 
     const name = `Task completed ${params.id}`;
     await questNotionService.addToHistory(

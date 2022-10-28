@@ -48,6 +48,7 @@ export class QuestNotionService implements IQuestNotionService {
     public getVaultGoals = async () => {
         const { results: pages } = await this.client.databases.query({
             database_id: process.env.VAULT_NOTION_DATABASE!,
+            filter: { or: [{ property: 'Active', checkbox: { equals: true } }, { property: 'Active (Goal - 2)', formula: { checkbox: { equals: true } } }] },
         });
         return Promise.all(
             pages
