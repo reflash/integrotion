@@ -1,6 +1,6 @@
 import { Client } from '@notionhq/client/build/src';
 import { Bot } from 'grammy';
-import TodoistApiREST from 'todoist-api-ts';
+import { TodoistApi } from '@doist/todoist-api-typescript';
 import { AchievementNotionService } from './service/achievement/notion';
 import { AddTaskCommand } from './service/bot/commands/addTask';
 import { UserIdCheckMiddleware } from './service/bot/middlewares/userIdCheck';
@@ -14,7 +14,7 @@ const client = new Client({
     auth: process.env.NOTION_TOKEN,
 });
 
-const todoistFactory: TodoistClientFactory = () => new TodoistApiREST(process.env.TODOIST_TOKEN!);
+const todoistFactory: TodoistClientFactory = () => new TodoistApi(process.env.TODOIST_TOKEN!);
 export const todoist = todoistFactory();
 export const bot = new Bot(process.env.BOT_TOKEN!);
 export const questNotionService = new QuestNotionService(client);

@@ -20,6 +20,7 @@ describe('AchievementNotionService', () => {
         const mockName = 'name';
         const mockPoints = 10;
         const mockPage = {
+            url: 'to-indicate-full-page',
             icon: { type: 'file', file: { url: 'https://example.com' } },
             properties: {
                 Name: { title: [{ plain_text: mockName }] },

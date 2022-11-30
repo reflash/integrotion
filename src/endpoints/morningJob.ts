@@ -7,19 +7,19 @@ import { handlerAdapter, success } from '../utils/azure';
 import { Page } from '../utils/types';
 
 const questIsPlannedForToday = async (pages: Page[]) => {
-    const allTasks = await todoist.getAllTasks();
+    const allTasks = await todoist.getTasks();
     const today = todayDate();
     const todayTasks = allTasks.filter(t => t.due && t.due.date === today);
     const plannedPages = pages
         .map(page => ({ page, task: todayTasks.find(t => t.content.includes(getPageName(page))) }))
         .filter(({ task }) => task !== undefined)
-        .filter(({ task }) => !allTasks.some(t => t.parent_id === task!.id))
+        .filter(({ task }) => !allTasks.some(t => t.parentId === task!.id))
         .map(({ page }) => page);
     return plannedPages;
 };
 
 const getQuestTask = async (name: string) => {
-    const allTasks = await todoist.getAllTasks();
+    const allTasks = await todoist.getTasks();
     return allTasks.find(t => t.content.includes(name))!;
 };
 

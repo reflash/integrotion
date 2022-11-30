@@ -27,6 +27,7 @@ export const isRepeating = (type: string) =>
 export const isQuest = (type: string) => type === 'Quest';
 
 export const isChest = (type: string) => type === 'Chest';
+export const isVault = (type: string) => type === 'Vault';
 
 export const mapTagsToPrefix = (tags: string[]) => {
     if (tags.includes('quest')) return 'Quest';
