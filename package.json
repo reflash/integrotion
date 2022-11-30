@@ -64,8 +64,8 @@
     },
     "dependencies": {
         "@azure/storage-queue": "^12.7.0",
+        "@doist/todoist-api-typescript": "^2.1.2",
         "@notionhq/client": "^2.2.1",
-        "grammy": "^1.3.3",
-        "todoist-api-ts": "^1.2.0"
+        "grammy": "^1.3.3"
     }
 }

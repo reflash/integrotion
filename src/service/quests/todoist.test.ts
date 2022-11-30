@@ -1,13 +1,13 @@
 // tslint:disable: no-magic-numbers
 import { mock, mockReset } from 'jest-mock-extended';
-import TodoistApiREST from 'todoist-api-ts';
+import { TodoistApi } from '@doist/todoist-api-typescript';
 import { ICategoryNotionService } from '../category/notion';
 import { IRewardNotionService } from '../reward/notion';
 import { IQuestTodoistService, QuestTodoistService } from './todoist';
 import { Quest } from './types';
 
 describe('QuestTodoistService', () => {
-    const todoist = mock<TodoistApiREST>();
+    const todoist = mock<TodoistApi>();
     const categoryService = mock<ICategoryNotionService>();
     const rewardService = mock<IRewardNotionService>();
 
@@ -40,13 +40,13 @@ describe('QuestTodoistService', () => {
         const lengthContent = ` (${mockLength}m)`;
         categoryService.getCategoryById.mockResolvedValue({ name: 'category-name' } as any);
         rewardService.getRewardById.mockResolvedValue({ name: '3 gold' } as any);
-        todoist.getAllProjects.mockResolvedValue([{ id: mockProjectId, name: 'category-name' } as any]);
-        todoist.getAllLabels.mockResolvedValue([{ id: mockLabelId, name: '🏅3_gold' } as any]);
+        todoist.getProjects.mockResolvedValue([{ id: mockProjectId, name: 'category-name' } as any]);
+        todoist.getLabels.mockResolvedValue([{ id: mockLabelId, name: '🏅3_gold' } as any]);
 
         const text = await service.createQuestTask(quest, mockDue, mockLength);
 
         expect(text).toBe(`${quest.emoji} ${quest.name}${lengthContent}`);
-        expect(todoist.createNewTask).toBeCalledWith({
+        expect(todoist.addTask).toBeCalledWith({
             content: `**[${quest.type}]** ${quest.emoji} [${quest.name}](${quest.url})${lengthContent} | [NID](${quest.id})`,
             description: quest.description,
             priority: quest.priority,

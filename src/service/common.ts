@@ -1,4 +1,4 @@
-import TodoistApiREST from 'todoist-api-ts';
+import { TodoistApi } from '@doist/todoist-api-typescript';
 import { Page, TitlePropertyValue } from '../utils/types';
 
 const defaultAchievementPicture = 'https://tagn.files.wordpress.com/2016/06/rtdachi.jpg';
@@ -24,4 +24,4 @@ export const getPagePicture = (page: Page) => {
     );
 };
 
-export type TodoistClientFactory = () => TodoistApiREST;
+export type TodoistClientFactory = () => TodoistApi;
