@@ -9,13 +9,6 @@
             "detail": "yarn debug:setup"
         },
         {
-            "type": "npm",
-            "script": "debug:cleanup",
-            "problemMatcher": [],
-            "label": "debug:cleanup",
-            "detail": "yarn debug:setup"
-        },
-        {
             "type": "func",
             "command": "host start",
             "problemMatcher": "$func-node-watch",

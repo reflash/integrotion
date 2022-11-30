@@ -40,7 +40,6 @@
                 "--runInBand"
             ],
             "preLaunchTask": "debug:setup",
-            "postDebugTask": "debug:cleanup",
             "args": [],
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
