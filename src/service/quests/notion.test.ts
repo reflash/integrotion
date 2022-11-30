@@ -20,6 +20,7 @@ describe('QuestNotionService', () => {
         const mockEmoji = '🧠';
         const mockCategoryId = 'category-id';
         const mockRewardId = 'reward-id';
+        const mockVaultId = 'mock-vault-id';
         const mockPage = {
             url: 'https://example.com',
             icon: { type: 'file', file: { url: 'https://example.com' } },
@@ -30,6 +31,7 @@ describe('QuestNotionService', () => {
                 Tags: { multi_select: [{ name: 'quest' }] },
                 Category: { relation: [{ id: mockCategoryId }] },
                 Rewards: { relation: [{ id: mockRewardId }] },
+                'Relation (Great Vault)': { relation: [{ id: mockVaultId }] },
             },
         } as any;
         const mockResponse = { results: [mockPage] } as any;
@@ -47,6 +49,7 @@ describe('QuestNotionService', () => {
         expect(quest.categoryId).toBe(mockCategoryId);
         expect(quest.rewardIds.length).toBe(1);
         expect(quest.rewardIds[0]).toBe(mockRewardId);
+        expect(quest.goalId).toBe(mockVaultId);
     });
 
     test('getQuestByName | daily => parsed', async () => {
@@ -55,6 +58,7 @@ describe('QuestNotionService', () => {
         const mockEmoji = '🧠';
         const mockCategoryId = 'category-id';
         const mockRewardId = 'reward-id';
+        const mockVaultId = 'mock-vault-id';
         const mockPage = {
             url: 'https://example.com',
             icon: { type: 'file', file: { url: 'https://example.com' } },
@@ -65,6 +69,7 @@ describe('QuestNotionService', () => {
                 Tags: { multi_select: [{ name: 'repeating' }, { name: 'daily' }] },
                 Category: { relation: [{ id: mockCategoryId }] },
                 Rewards: { relation: [{ id: mockRewardId }] },
+                'Relation (Great Vault)': { relation: [{ id: mockVaultId }] },
                 'Max times completed in a row': { number: 1 },
                 'Times completed': { number: 1 },
                 'Times completed in a row': { number: 1 },
@@ -85,6 +90,7 @@ describe('QuestNotionService', () => {
         expect(quest.categoryId).toBe(mockCategoryId);
         expect(quest.rewardIds.length).toBe(1);
         expect(quest.rewardIds[0]).toBe(mockRewardId);
+        expect(quest.goalId).toBe(mockVaultId);
         expect(quest.repeating).not.toBeUndefined();
         expect(quest.repeating?.maxInARow).toBe(1);
         expect(quest.repeating?.timesCompleted).toBe(1);
@@ -99,6 +105,7 @@ describe('QuestNotionService', () => {
         const mockRewardId = 'reward-id';
         const mockStartTime = 'start-time';
         const mockQuestId = 'quest-id';
+        const mockVaultId = 'mock-vault-id';
         const mockPage = {
             url: 'https://example.com',
             icon: { type: 'file', file: { url: 'https://example.com' } },
@@ -109,6 +116,7 @@ describe('QuestNotionService', () => {
                 Tags: { multi_select: [{ name: 'repeating' }, { name: 'random' }] },
                 Category: { relation: [{ id: mockCategoryId }] },
                 Rewards: { relation: [{ id: mockRewardId }] },
+                'Relation (Great Vault)': { relation: [{ id: mockVaultId }] },
                 'Max times completed in a row': { number: 1 },
                 'Times completed': { number: 1 },
                 'Times completed in a row': { number: 1 },
@@ -136,6 +144,7 @@ describe('QuestNotionService', () => {
         expect(quest.categoryId).toBe(mockCategoryId);
         expect(quest.rewardIds.length).toBe(1);
         expect(quest.rewardIds[0]).toBe(mockRewardId);
+        expect(quest.goalId).toBe(mockVaultId);
         expect(quest.repeating).not.toBeUndefined();
         expect(quest.repeating?.maxInARow).toBe(1);
         expect(quest.repeating?.timesCompleted).toBe(1);

@@ -20,6 +20,7 @@ describe('AchievementNotionService', () => {
         const mockName = 'name';
         const mockPoints = 10;
         const mockPage = {
+            url: 'to-indicate-full-page',
             icon: { type: 'file', file: { url: 'https://example.com' } },
             properties: {
                 Name: { title: [{ plain_text: mockName }] },
@@ -32,7 +33,6 @@ describe('AchievementNotionService', () => {
         const achievements = await service.getNewAchievements();
 
         expect(achievements).not.toBeUndefined();
-        console.log(achievements);
         expect(achievements.length).toBe(1);
         expect(achievements[0].name).toBe(mockName);
         expect(achievements[0].pictureUrl).toBe('https://example.com');
