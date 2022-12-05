@@ -22,6 +22,7 @@ updateAppSettings() {
 publishFunctionApp() {
     # create node_modules symlink
     ln -s ../node_modules/ node_modules
+    ln -s ../dist/ dist
 
     func azure functionapp publish $functionAppName
     updateAppSettings

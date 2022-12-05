@@ -1,0 +1,12 @@
+{
+  "disabled": false,
+  "bindings": [
+    {
+      "type": "timerTrigger",
+      "direction": "in",
+      "name": "timer",
+      "schedule": "0 0 8 * * *"
+    }
+  ],
+  "scriptFile": "../dist/endpoints/morningJob.js"
+}

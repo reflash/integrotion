@@ -48,7 +48,6 @@ generated/
 .ionide
 test-coverage/
 yarn-error.log
-function.json
 tsconfig.tsbuildinfo
 sample_data.md
 
